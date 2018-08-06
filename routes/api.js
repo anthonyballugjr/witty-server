@@ -13,8 +13,21 @@ function respondWithResult(res, statusCode) {
   };
 }
 
+function handleError(res, statusCode){
+  statuscode = statusCode || 500;
+  return function(err){
+    res.status(statusCode).send(err);
+  }
+}
+
+router.get('/', function(req, res){
+  User.find().exec().then(respondWithResult(res))
+  .catch(handleError(res));
+});
+
 
 router.post('/register', function (req, res) {
+  console.log(req.body);
   User.register(new User({ username: req.body.username }),
     req.body.password, function (err, account) {
       if (err) {
@@ -32,6 +45,7 @@ router.post('/register', function (req, res) {
 });
 
 router.post('/login', function (req, res, next) {
+  console.log(req.body);
   passport.authenticate('local', function (err, user, info) {
     if (err) {
       return next(err);
@@ -54,15 +68,15 @@ router.post('/login', function (req, res, next) {
   })(req, res, next);
 });
 
-router.get('/logout', function(req, res) {
+router.get('/logout', function (req, res) {
   req.logout();
   res.status(200).json({
-    status: 'User Logout'
+    status: 'Successfully logged out'
   });
 });
 
-router.get('/ping', function(req, res){
+router.get('/ping', function (req, res) {
   res.status(200).send('Pong!');
-  });
+});
 
 module.exports = router;

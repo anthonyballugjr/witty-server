@@ -14,19 +14,21 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var api = require('./routes/api');
 
+var seed = require('./config/seed');
+var mongoose = require('mongoose');
+var cors = require('cors');
+
 var categories = require('./controllers/categories');
 var users = require('./controllers/users');
 
 
 
 var app = express();
-
+app.use(cors());
 
 
 //xx
-var seed = require('./config/seed');
-var mongoose = require('mongoose');
-var cors = require('cors');
+
 mongoose.connect('mongodb://localhost:27017/wittywallet-dev', { useNewUrlParser: true });
 //connection string
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
@@ -61,7 +63,7 @@ app.use(passport.initialize());
 app.use('/', indexRouter);
 app.use('/users', users);
 app.use('/categories', categories);
-app.use('/api', api);
+app.use('/auth', api);
 
 
 // catch 404 and forward to error handler
