@@ -1,146 +1,74 @@
-var express = require('express');
-var router = express.Router();
-var Users = require('../models/users');
+var jwt = require('jsonwebtoken');
+var User = require('../models/users');
+var authConfig = require('../config/database');
 
-// No result handler
-function handleEntityNotFound(res) {
-  return function (entity) {
-    if (!entity) {
-      res.status(404).end();
-      return null;
-    }
-    return entity;
+function generateToken(user) {
+  return jwt.sign(user, authConfig.secret, {
+    expiresIn: 10080
+  });
+}
+
+function setUserInfo(request) {
+  return {
+    _id: request._id,
+    email: request.email,
   };
 }
 
-// Response handler
-function respondWithResult(res, statusCode) {
-  statusCode = statusCode || 200;
-  return function (entity) {
-    if (entity) {
-      return res.status(statusCode).json(entity);
-    }
-    return null;
-  };
+exports.login = function (req, res, next) {
+
+  var userInfo = setUserInfo(req.user);
+
+  res.status(200).json({
+    token: 'JWT ' + generateToken(userInfo),
+    user: userInfo
+  });
+
 }
 
-// Error handler
-function handleError(res, statusCode) {
-  statusCode = statusCode || 500;
-  return function (err) {
-    res.status(statusCode).send(err);
-  };
-}
+exports.register = function (req, res, next) {
 
-// Get all entries
-router.get('/', function (req, res) {
-  Users.find().exec()
-    .then(respondWithResult(res))
-    .catch(handleError(res));
-  // var apiKey = req.query.apiKey;
-  // var name = req.query.name;
-  // var q = {
-  //   active: true
-  // };
-  // if (name) {
-  //   q = {
-  //     active: true,
-  //     name: name
-  //   };
-  // }
-  // if (apiKey === 'this_is_my_token') {
-  //   // Users.find(q).exec()
-  //   // .then(respondWithResult(res))
-  //   // .catch(handleError(res));
-  //   Users.find(q).exec(function (err, data) {
-  //     if (err) res.sendStatus(403);
-  //     res.send(data.map(x => {
-  //       return {
-  //         CategoryName: x.name,
-  //         Budget: x.budget,
-  //       };
-  //     }));
-  //   });
-  // } else {
-  //   res.status(403).send('Unauthorized Access');
-  // }
-});
+  var email = req.body.email;
+  var password = req.body.password;
 
-router.post('/login', function (req, res) {
-  Users.find().exec()
-    .then(respondWithResult(res))
-    .catch(handleError(res));
-  // var apiKey = req.query.apiKey;
-  var email = req.query.email;
-  var password = req.query.password;
-  // var q = {
-  //   active: true
-  // };
-  // if (name) {
-  //   q = {
-  //     active: true,
-  //     name: name
-  //   };
-  // }
-  // if (apiKey === 'this_is_my_token') {
-  //   // Users.find(q).exec()
-  //   // .then(respondWithResult(res))
-  //   // .catch(handleError(res));
-  //   Users.find(q).exec(function (err, data) {
-  //     if (err) res.sendStatus(403);
-  //     res.send(data.map(x => {
-  //       return {
-  //         CategoryName: x.name,
-  //         Budget: x.budget,
-  //       };
-  //     }));
-  //   });
-  // } else {
-  //   res.status(403).send('Unauthorized Access');
-  // }
-});
-
-// Get an entry by Id
-router.get('/:id', function (req, res) {
-  Users.findById(req.params.id).exec()
-    .then(handleEntityNotFound(res))
-    .then(respondWithResult(res))
-    .catch(handleError(res));
-});
-
-// Create new entry
-router.post('/', function (req, res) {
-  Users.create(req.body)
-    .then(respondWithResult(res, 201))
-    .catch(handleError(res));
-  console.log(req.body);
-});
-
-// Update existing entry
-router.put('/:id', function (req, res) {
-  if (req.body._id) {
-    Reflect.defineProperty(req.body, '_id');
+  if (!email) {
+    return res.status(422).send({ error: 'You must enter an email address' });
   }
-  Users.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    upsert: true,
-    setDefaultsOnInsert: true,
-    runValidators: true
-  }).exec()
-    .then(handleEntityNotFound(res))
-    .then(respondWithResult(res, 201))
-    .catch(handleError(res));
-});
 
-// Delete an existing entry
-router.delete('/:id', function (req, res) {
-  if (req.body._id) {
-    Reflect.defineProperty(req.body, '_id');
+  if (!password) {
+    return res.status(422).send({ error: 'You must enter a password' });
   }
-  Users.findByIdAndRemove(req.params.id).exec()
-    .then(handleEntityNotFound(res))
-    .then(respondWithResult(res))
-    .catch(handleError(res));
-});
 
-module.exports = router;
+  User.findOne({ email: email }, function (err, existingUser) {
+
+    if (err) {
+      return next(err);
+    }
+
+    if (existingUser) {
+      return res.status(422).send({ error: 'That email address is already in use' });
+    }
+
+    var user = new User({
+      email: email,
+      password: password,
+    });
+
+    user.save(function (err, user) {
+
+      if (err) {
+        return next(err);
+      }
+
+      var userInfo = setUserInfo(user);
+
+      res.status(201).json({
+        token: 'JWT ' + generateToken(userInfo),
+        user: userInfo
+      })
+
+    });
+
+  });
+
+}

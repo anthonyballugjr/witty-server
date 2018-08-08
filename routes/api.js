@@ -13,16 +13,16 @@ function respondWithResult(res, statusCode) {
   };
 }
 
-function handleError(res, statusCode){
+function handleError(res, statusCode) {
   statuscode = statusCode || 500;
-  return function(err){
+  return function (err) {
     res.status(statusCode).send(err);
   }
 }
 
-router.get('/', function(req, res){
+router.get('/', function (req, res) {
   User.find().exec().then(respondWithResult(res))
-  .catch(handleError(res));
+    .catch(handleError(res));
 });
 
 
@@ -34,16 +34,17 @@ router.post('/register', function (req, res) {
         return res.status(500).json({
           err: err
         });
+        console.log(err);
       }
-      passport.authenticate('local')(req, res, function () {
-        var token;
-        token = user.generateJwt();
-        return res.status(200).json({
-          status: 'Registration successful!',
-          'token': token
+      passport.authenticate('local')
+        (req, res, function () {
+          // var token;
+          // token = user.generateJwt();
+          return res.status(201).json({
+            status: 'Registration successful!',
+            // 'token': token
+          });
         });
-        console.log(req.body);
-      });
     });
 });
 
@@ -68,7 +69,7 @@ router.post('/login', function (req, res, next) {
       token = user.generateJwt();
       res.status(200).json({
         status: 'Login successful!',
-        'username': user.username,
+        'username': user.email,
         'id': user._id,
         'token': token,
         'password': user.password

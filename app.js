@@ -2,17 +2,21 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var sassMiddleware = require('node-sass-middleware');
+var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+
+var passportConfig=require('./config/passport');
+
+var sassMiddleware = require('node-sass-middleware');
 
 var config = require('./config/database');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var api = require('./routes/api');
+// var api = require('./controllers/users');
 
 var seed = require('./config/seed');
 var mongoose = require('mongoose');
@@ -21,14 +25,10 @@ var cors = require('cors');
 var categories = require('./controllers/categories');
 var User = require('./models/users');
 
-
-
 var app = express();
 app.use(cors());
 
-
 //xx
-
 mongoose.connect('mongodb://localhost:27017/wittywallet-dev', { useNewUrlParser: true });
 //connection string
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
@@ -53,17 +53,18 @@ app.use(sassMiddleware({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(require('express-session')({
-  secret: config.secret,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    expires: 3600 * 24 * 30
-  }
-}));
+// app.use(require('express-session')({
+//   secret: config.secret,
+//   resave: false,
+//   saveUninitialized: false,
+//   cookie: {
+//     expires: 3600 * 24 * 30
+//   }
+// }));
 //xx
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
 app.use(passport.initialize());
 app.use(passport.session());
 

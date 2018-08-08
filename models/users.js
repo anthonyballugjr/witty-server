@@ -3,10 +3,10 @@ var Schema = mongoose.Schema;//
 var bcrypt = require('bcrypt-nodejs');
 var jwt = require('jsonwebtoken');
 var passportLocalMongoose = require('passport-local-mongoose');
-var secret=require('../config/database').secret;
+var secret = require('../config/database').secret;
 
 var UserSchema = new Schema({
-    email: {
+    username: {
         type: String,
         lowercase: true,
         unique: true,
@@ -46,7 +46,7 @@ UserSchema.pre('save', function (next) {
 
 // UserSchema.post('save', function (next) {
 //     var user = this;
-    
+
 // });
 
 UserSchema.methods.comparePassword = function (passw, cb) {
@@ -58,15 +58,15 @@ UserSchema.methods.comparePassword = function (passw, cb) {
     });
 };
 
-UserSchema.methods.generateJwt = function(){
+UserSchema.methods.generateJwt = function () {
     var expiry = new Date();
     expiry.setDate(expiry.getDate() + 30);
 
     return jwt.sign({
         _id: this.id,
-        email: this.email,
+        username: this.username,
         name: this.name,
-        exp: parseInt(expiry.getTime()/1000),
+        exp: parseInt(expiry.getTime() / 1000),
     }, secret);
 }
 
