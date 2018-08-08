@@ -16,7 +16,7 @@ function readStream(dir, file) {
 }
 
 module.exports = function (seedIfNeeded) {
-  var categoriesCSV = readStream('default', 'categories.csv');
+  var categoriesCSV = readStream('default', 'categoriesCSV.csv');
   if (seedIfNeeded) {
     Categories(categoriesCSV);
   }
