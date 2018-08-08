@@ -10,7 +10,7 @@ var mongoose = require('mongoose');
 var cors = require('cors');
 var routes = require('./routes');
 
-// var seedDatabase = require('./services/seed');
+var seedDatabase = require('./services/seeder');
 var config = require('./config');
 
 var app = express();
@@ -50,7 +50,7 @@ app.use(session({
 }));
 
 require('./services/mongoose');
-// require('./services/passport/passport');
+require('./services/auth/passport');
 routes(app);
 
 // catch 404 and forward to error handler
@@ -76,5 +76,7 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+seedDatabase(true);
 
 module.exports = app;

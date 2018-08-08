@@ -10,6 +10,7 @@ var masterKey = function (req, res, next) {
 
 module.exports = function (app) {
   app.use('/', require('./api/main'));
-  // app.use('/api/auth', require('./api/auth/auth'));
-  // app.use('/api/events', expressAccessToken, masterKey, require('./api/events'));
+  app.use('/api/users', require('./api/users'));
+  // app.use('/api/users', expressAccessToken, masterKey, require('./api/users'));
+  app.use('/api/categories', require('./api/categories'));
 };
