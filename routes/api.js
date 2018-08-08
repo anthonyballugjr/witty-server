@@ -36,8 +36,11 @@ router.post('/register', function (req, res) {
         });
       }
       passport.authenticate('local')(req, res, function () {
+        var token;
+        token = user.generateJwt();
         return res.status(200).json({
-          status: 'Registration successful!'
+          status: 'Registration successful!',
+          'token': token
         });
         console.log(req.body);
       });
@@ -52,7 +55,7 @@ router.post('/login', function (req, res, next) {
     }
     if (!user) {
       return res.status(401).json({
-        err: info
+        err: 'User not found'
       });
     }
     req.logIn(user, function (err) {
@@ -61,15 +64,22 @@ router.post('/login', function (req, res, next) {
           err: 'Could not log in user'
         });
       }
+      var token;
+      token = user.generateJwt();
       res.status(200).json({
-        status: 'Login successful!'
+        status: 'Login successful!',
+        'username': user.username,
+        'id': user._id,
+        'token': token,
+        'password': user.password
       });
     });
   })(req, res, next);
 });
 
 router.get('/logout', function (req, res) {
-  req.logout();
+  console.log(req.body);
+  req.logOut();
   res.status(200).json({
     status: 'Successfully logged out'
   });

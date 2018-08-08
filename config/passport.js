@@ -5,20 +5,14 @@ var JwtStrategy = require('passport-jwt').Strategy;
 var ExtractJwt = require('passport-jwt').ExtractJwt;
 var LocalStrategy = require('passport-local').Strategy;
 
-module.exports = function(passport) {
-    var opts = {};
-    opts.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme("jwt");
-    opts.secretOrKey = config.secret;
-    passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
-      User.findOne({id: jwt_payload.id}, function(err, user) {
-            if (err) {
-                return done(err, false);
-            }
-            if (user) {
-                done(null, user);
-            } else {
-                done(null, false);
-            }
-        });
-    }));
-  };
+passport.use(new LocalStrategy({
+    usernameField: 'email'
+}, function(username, password, done){
+    User.findOne({email:username}, function(err,user){
+        if(err){
+            return done(err);
+        }
+        //return if user not found in database
+        return done(null, user);
+    })
+}))

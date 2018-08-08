@@ -2,7 +2,7 @@ var Categories = require('../models/categories'); //use models/categories
 
 var categoryEntry = [
     {
-        name: 'Food',
+        name: 'Food & Beverages',
         budget: 5000,
         expense: [
             {
@@ -40,7 +40,7 @@ var categoryEntry = [
         ]
     },
     {
-        name: 'Health Care',
+        name: 'Health Care & Fitness',
         budget: 3000,
         expense: [
             {
@@ -56,12 +56,23 @@ var categoryEntry = [
         ]
     },
     {
-        name: 'Car',
+        name: 'Transportation',
         budget: 1500,
         expense: [
             {
                 desc: 'maintenance',
                 amount: 500,
+                date: new Date()
+            }
+        ]
+    },
+    {
+        name: 'Entertainment',
+        budget: 2000,
+        expense:[
+            {
+                desc: 'movie night',
+                amount: 200,
                 date: new Date()
             }
         ]

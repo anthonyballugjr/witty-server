@@ -19,7 +19,7 @@ var mongoose = require('mongoose');
 var cors = require('cors');
 
 var categories = require('./controllers/categories');
-var users = require('./controllers/users');
+var User = require('./models/users');
 
 
 
@@ -53,17 +53,32 @@ app.use(sassMiddleware({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(require('express-session')({
+  secret: config.secret,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    expires: 3600 * 24 * 30
+  }
+}));
 //xx
-app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(passport.initialize());
+app.use(passport.session());
+
+
 //xx
 
 app.use('/', indexRouter);
-app.use('/users', users);
+// app.use('/users', users);
 app.use('/categories', categories);
 app.use('/auth', api);
+
+// passport config
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 
 // catch 404 and forward to error handler
@@ -81,12 +96,6 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-// passport config
-var account = require('./models/users');
-passport.use(new LocalStrategy(account.authenticate()));
-passport.serializeUser(account.serializeUser());
-passport.deserializeUser(account.deserializeUser());
 
 seed.seed();
 
