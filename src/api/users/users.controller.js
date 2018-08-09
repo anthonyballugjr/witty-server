@@ -50,7 +50,7 @@ var controller = {
 
     return passport.authenticate('local', { session: false }, (err, passportUser, info) => {
       if (err) {
-        return next(err);
+        return next(info);
       }
 
       if (passportUser) {
@@ -60,7 +60,7 @@ var controller = {
         return res.json({ user: user.toAuthJSON() });
       }
 
-      return status(400).info;
+      return res.status(401).send(info);
     })(req, res, next);
   },
   me: function (req, res, next) {
