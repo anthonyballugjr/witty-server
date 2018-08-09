@@ -34,6 +34,6 @@ module.exports = function (seedIfNeeded) {
   // var categoriesCSV = readStream('default', 'categories.csv');
   if (seedIfNeeded) {
     // Categories(categoriesCSV);
-    seedJSON(Categories, require('./seed.categoriesJSON'))
+    seedJSON(Categories, require('../../public/json/categories'))
   }
 };
