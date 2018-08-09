@@ -65,6 +65,6 @@ typings/
 public/.DS_Store
 
 playground
-.vscode
+/.vscode
 .env
 /dist
