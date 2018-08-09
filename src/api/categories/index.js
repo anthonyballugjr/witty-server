@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var controller = require('./categories.controller');
+var auth = require('../../services/auth/jwt');
 
 // ROUTES
 // GET: api/categories/
@@ -10,10 +11,10 @@ var controller = require('./categories.controller');
 // PUT: api/categories/:id
 // DELETE: api/categories/:id
 
-router.get('/', controller.getEntries);
-router.get('/:id', controller.getEntry);
-router.post('/', controller.create);
-router.put('/:id', controller.update);
-router.delete('/:id', controller.destroy);
+router.get('/', auth.optional, controller.getEntries);
+router.get('/:id', auth.optional, controller.getEntry);
+router.post('/', auth.required, controller.create);
+router.put('/:id', auth.required, controller.update);
+router.delete('/:id', auth.required, controller.destroy);
 
 module.exports = router;
