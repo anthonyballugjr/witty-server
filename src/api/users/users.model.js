@@ -17,6 +17,43 @@ var UsersSchema = new Schema({
   salt: String,
 });
 
+// Validate empty email
+UsersSchema
+  .path('email')
+  .validate(function(email) {
+    return email.length;
+  }, 'Email cannot be blank');
+
+// // Validate empty password
+// UsersSchema
+//   .path('password')
+//   .validate(function(password) {
+//     return password.length;
+//   }, 'Password cannot be blank');
+
+// Validate email is not taken
+UsersSchema
+  .path('email')
+  .validate(function(value) {
+    return this.constructor.findOne({ email: value }).exec()
+      .then(user => {
+        if(user) {
+          if(this.id === user.id) {
+            return true;
+          }
+          return false;
+        }
+        return true;
+      })
+      .catch(function(err) {
+        throw err;
+      });
+  }, 'The specified email address is already in use.');
+
+var validatePresenceOf = function(value) {
+  return value && value.length;
+};
+
 UsersSchema.methods.setPassword = function (password) {
   this.salt = crypto.randomBytes(16).toString('hex');
   this.hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');

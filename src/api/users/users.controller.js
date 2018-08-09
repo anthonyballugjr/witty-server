@@ -27,7 +27,8 @@ var controller = {
     finalUser.setPassword(user.password);
 
     return finalUser.save()
-      .then(() => res.json({ user: finalUser.toAuthJSON() }));
+      .then(() => res.json({ user: finalUser.toAuthJSON() }))
+      .catch((err) => res.status(400).send({ errors: err.errors }));
   },
   login: function (req, res, next) {
     var { body: { user } } = req;
@@ -72,7 +73,7 @@ var controller = {
           return res.sendStatus(400);
         }
 
-        return res.json({ user: user.toAuthJSON()});
+        return res.json({ user: user.toAuthJSON() });
       });
   }
 };
