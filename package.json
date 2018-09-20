@@ -1,0 +1,48 @@
+{
+  "name": "wittywalletserver",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "babel-node": "babel-node --presets=env",
+    "build:babel": "babel ./ --out-dir dist/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log,./playground --copy-files",
+    "build": "rimraf dist/ && npm run build:babel && npm run copy:env",
+    "copy:env": "cp ./.env.example dist/.env.example",
+    "deploy:commit": "git add . && git commit -am.",
+    "deploy:push": "git push",
+    "deploy": "npm run deploy:commit && npm run deploy:push",
+    "serve": "nodemon --exec npm run babel-node -- ./src/index.js",
+    "start": "npm run build && node dist/src/index.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cookie-parser": "~1.4.3",
+    "cors": "^2.8.4",
+    "debug": "~2.6.9",
+    "express": "^4.16.3",
+    "express-access-token": "^1.0.2",
+    "express-jwt": "^5.3.1",
+    "express-session": "^1.15.6",
+    "fast-csv": "^2.4.1",
+    "jsonwebtoken": "^8.2.2",
+    "moment": "^2.22.2",
+    "mongoose": "~5.2.4",
+    "morgan": "~1.9.0",
+    "node-fetch": "^2.1.2",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "path": "^0.12.7",
+    "request": "^2.87.0",
+    "request-promise": "^4.2.2",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "concat": "^1.0.3",
+    "dotenv-safe": "^6.0.0",
+    "nodemon": "^1.18.3",
+    "rimraf": "^2.6.2"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  }
+}
