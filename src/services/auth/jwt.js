@@ -2,7 +2,7 @@ var jwt = require('express-jwt');
 
 var getTokenFromHeaders = (req) => {
   var { headers: { authorization } } = req;
-  if (authorization && authorization.split(' ')[0] === 'Bearer') {
+  if (authorization && authorization.split(' ')[0] === 'Token') {
     return authorization.split(' ')[1];
   }
   return null;

@@ -49,7 +49,7 @@ var authentication = {
       });
     }
 
-    return passport.authenticate('local', { session: true }, (err, passportUser, info) => {
+    return passport.authenticate('local', { session: false }, (err, passportUser, info) => {
       if (err) {
         return next(info);
       }
@@ -83,6 +83,7 @@ var authentication = {
       });
   },
   changePassword: function (req, res) {
+    console.log(req);
     var id = req.params.id
     var oldPassword = req.body.oldPassword
     var newPassword = req.body.newPassword

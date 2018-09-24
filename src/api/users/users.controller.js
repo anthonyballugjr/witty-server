@@ -34,17 +34,19 @@ var controller = {
       .catch(handler.handleError(res));
   },
   profile: function (req, res) {
-    var id = req.params.id
-    return Users.findById(id)
+    console.log(req.params);
+    return Users.findOne({ email: req.params.email })
+      .select('-hash -salt')
       .exec()
       .then(handler.handleEntityNotFound(res))
-      .then((user) => {
-        res.status(200).send({
-          _id: user._id,
-          email: user.email,
-          name: user.name
-        });
-      })
+      .then(handler.respondWithResult(res))
+      // .then((user) => {
+      //   res.status(200).json({
+      //     _id: user._id,
+      //     email: user.email,
+      //     name: user.name
+      //   });
+      // })
       .catch(handler.handleError(res));
   }
 };

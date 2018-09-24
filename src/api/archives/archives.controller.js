@@ -3,7 +3,8 @@ var handler = require('../../services/handler');
 
 var controller = {
   getEntries: (req, res) => {
-    return Archives.find()
+    var userId = req.query.userId
+    return Archives.find(userId ? { userId: userId } : {})
       .exec()
       .then((archives) => {
         res.status(200).send(archives.map(archive => {
@@ -13,25 +14,26 @@ var controller = {
             totalBudget: archive.totalBudget,
             totalExpenses: archive.totalExpenses,
             totalSavings: archive.totalSavings
-          }
+          };
         }))
       })
       .catch(handler.handleError(res));
   },
   getEntry: function (req, res) {
-    return Transaction.findById(req.params.id)
+    return Archives.findById(req.params.id)
       .exec()
       .then(handler.handleEntityNotFound(res))
       .then((archive) => {
         res.status(200).send({
           _id: archive._id,
+          period: archive.period,
           totalBudget: archive.totalBudget,
           totalExpenses: archive.totalExpenses,
           totalSavings: archive.totalSavings,
           extraSavings: archive.totalBudget - (archive.totalExpenses + archive.totalSavings)
         });
       })
-      // .then(handler.respondWithResult(res))
+      .then(handler.respondWithResult(res))
       .catch(handler.handleError(res));
   },
   getOverview: (req, res) => {
