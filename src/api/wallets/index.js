@@ -4,6 +4,8 @@ var router = express.Router();
 var controller = require('./wallets.controller');
 var auth = require('../../services/auth/jwt');
 
+router.get('/next/:userId', auth.optional, controller.createBudget);
+
 router.get('/', auth.optional, controller.getEntries);
 router.get('/user/:user', auth.required, controller.getMyWallets);
 router.get('/overview/:user', auth.required, controller.overview);

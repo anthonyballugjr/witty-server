@@ -1,5 +1,6 @@
 var Wallet = require('./wallets.model');
 var handler = require('../../services/handler');
+var decode = require('jwt-decode');
 
 var month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 var n = new Date();
@@ -37,9 +38,14 @@ var controller = {
             .catch(handler.handleError(res));
     },
     getMyWallets: function (req, res) {
+        // console.log(req);
+        // var user = decode(req.get('Authorization').splice(' ')[1]);
+        // var query = {userId: user.id};
+        // console.log(user);
         var period = req.query.period
         var user = req.params.user
-        return Wallet.find(period ? { userId: user, period: period }: {userId:user})
+        return Wallet.find(period ? { userId: user, period: period } : { userId: user })
+            // return Wallet.find()
             .populate('transactions')
             .populate('category', '-wallets')
             // .where('period', period)
@@ -112,6 +118,36 @@ var controller = {
             .then(handler.handleEntityNotFound(res))
             .then(handler.respondWithResult(res, 204))
             .catch(handler.handleError(res));
+    },
+    createBudget: function (req, res) {
+        var userId = req.params.userId
+        var month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+        var n = new Date();
+        var m = month[n.getMonth()];
+        var next = month[n.getMonth() + 1];
+        var y = n.getFullYear();
+        var period = m + " " + y;
+        var nextPeriod = next + " " + y
+
+        Wallet.find({ userId: userId })
+            .where('period', period)
+            .exec()
+            .then((wallets) => {
+                var nextData = {
+                    next: wallets.map(wallet => {
+                        return {
+                            name: wallet.name,
+                            amount: 0,
+                            categoryId: wallet.categoryId,
+                            userId: wallet.userId,
+                            type: wallet.type,
+                            period: nextPeriod
+                        }
+                    })
+                }
+                res.send(nextData);
+            })
+
     }
 };
 
