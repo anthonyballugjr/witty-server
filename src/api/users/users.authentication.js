@@ -1,6 +1,7 @@
 var passport = require('passport');
 
 var Users = require('./users.model.js');
+var decode = require('jwt-decode');
 
 var authentication = {
   register: function (req, res, next) {
@@ -28,7 +29,7 @@ var authentication = {
 
     return finalUser.save()
       .then(() => res.json({ user: finalUser.toAuthJSON() }))
-      .catch((err) => res.status(400).send(err));
+      .catch((err) => res.status(400).send(err.message));
   },
   login: function (req, res, next) {
     var { body: { user } } = req;
@@ -83,8 +84,10 @@ var authentication = {
       });
   },
   changePassword: function (req, res) {
-    console.log(req);
-    var id = req.params.id
+
+    var user = decode(req.get('Authorization').split(' ')[1]);
+    var userId = user.id;
+    
     var oldPassword = req.body.oldPassword
     var newPassword = req.body.newPassword
     var confirmPassword = req.body.confirmPassword
@@ -95,7 +98,7 @@ var authentication = {
     if (oldPassword === newPassword) {
       return res.status(400).send('New password cannot be the same as current password');
     }
-    return Users.findById(id)
+    return Users.findById(userId)
       .then(function (user) {
         if (!user) {
           return res.status(400).send('User not found!');

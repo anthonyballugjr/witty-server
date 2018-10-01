@@ -1,5 +1,6 @@
 var Users = require('./users.model');
 var handler = require('../../services/handler');
+var decode = require('jwt-decode');
 
 var controller = {
   getEntries: function (req, res) {
@@ -20,10 +21,12 @@ var controller = {
       .catch(handler.handleError(res));
   },
   update: function (req, res) {
+    var user = decode(req.get('Authorization').split(' ')[1]);
+    var userId = user.id;
     if (req.body._id) {
       Reflect.deleteProperty(req.body, '_id');
     }
-    return Users.findByIdAndUpdate(req.params.id, req.body, {
+    return Users.findByIdAndUpdate(userId, req.body, {
       new: true,
       upsert: true,
       setDefaultOnInsert: true,
@@ -34,8 +37,9 @@ var controller = {
       .catch(handler.handleError(res));
   },
   profile: function (req, res) {
-    console.log(req.params);
-    return Users.findOne({ email: req.params.email })
+    var user = decode(req.get('Authorization').split(' ')[1]);
+    var email = user.email;
+    return Users.findOne({ email: email })
       .select('-hash -salt')
       .exec()
       .then(handler.handleEntityNotFound(res))
