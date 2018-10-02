@@ -1,6 +1,5 @@
 var Users = require('./users.model');
 var handler = require('../../services/handler');
-var decode = require('jwt-decode');
 
 var controller = {
   getEntries: function (req, res) {
@@ -21,8 +20,8 @@ var controller = {
       .catch(handler.handleError(res));
   },
   update: function (req, res) {
-    var user = decode(req.get('Authorization').split(' ')[1]);
-    var userId = user.id;
+    var userId = req.payload.id;
+
     if (req.body._id) {
       Reflect.deleteProperty(req.body, '_id');
     }
@@ -37,8 +36,8 @@ var controller = {
       .catch(handler.handleError(res));
   },
   profile: function (req, res) {
-    var user = decode(req.get('Authorization').split(' ')[1]);
-    var email = user.email;
+    var email = req.payload.email;
+
     return Users.findOne({ email: email })
       .select('-hash -salt')
       .exec()

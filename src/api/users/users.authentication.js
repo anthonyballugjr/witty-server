@@ -1,7 +1,6 @@
 var passport = require('passport');
 
 var Users = require('./users.model.js');
-var decode = require('jwt-decode');
 
 var authentication = {
   register: function (req, res, next) {
@@ -32,6 +31,7 @@ var authentication = {
       .catch((err) => res.status(400).send(err.message));
   },
   login: function (req, res, next) {
+    console.log(req.headers);
     var { body: { user } } = req;
 
     if (!user.email) {
@@ -85,8 +85,7 @@ var authentication = {
   },
   changePassword: function (req, res) {
 
-    var user = decode(req.get('Authorization').split(' ')[1]);
-    var userId = user.id;
+    var userId = req.payload.id;
     
     var oldPassword = req.body.oldPassword
     var newPassword = req.body.newPassword
