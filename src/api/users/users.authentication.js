@@ -108,7 +108,7 @@ var authentication = {
         user.setPassword(newPassword);
         return user.save()
           .then(() => res.json(user))
-          .catch((err) => res.status(400).send(err.message));
+          .catch((err) => res.status(400).send(err));
       });
   }
 };
