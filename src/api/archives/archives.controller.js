@@ -1,5 +1,6 @@
 var Archives = require('./archives.model');
 var handler = require('../../services/handler');
+var Wallets = require('../wallets/wallets.model');
 
 var controller = {
   getEntries: (req, res) => {
@@ -36,9 +37,9 @@ var controller = {
       .then(handler.respondWithResult(res))
       .catch(handler.handleError(res));
   },
-  getOverview: (req, res) => {
+  overview: (req, res) => {
     var period = req.query.period
-    var userId = req.params.user
+    var userId = req.params.userId
     return Archives.find(period ? { userId: userId, period: period } : { userId: userId })
       .exec()
       .then(handler.handleEntityNotFound(res))

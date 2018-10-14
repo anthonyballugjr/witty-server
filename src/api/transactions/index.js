@@ -11,5 +11,4 @@ router.post('/', auth.required, controller.create);
 router.put('/:id', auth.required, controller.update);
 router.delete('/:id', auth.required, controller.destroy);
 
-
 module.exports = router;
