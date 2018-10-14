@@ -4,14 +4,17 @@ var router = express.Router();
 var controller = require('./wallets.controller');
 var auth = require('../../services/auth/jwt');
 
-router.get('/next/:userId', auth.optional, controller.createBudget);
-
+//create budget with ML
+router.get('/next/:userId', auth.optional, controller.getNext);
+router.get('/predict/:userId', auth.optional, controller.predict);
+//CRUD
 router.get('/', auth.optional, controller.getEntries);
-router.get('/user/:user', auth.required, controller.getMyWallets);
-router.get('/overview/:user', auth.required, controller.overview);
+router.get('/user/:userId', auth.required, controller.getMyWallets);
 router.post('/', auth.required, controller.create);
 router.put('/:id', auth.required, controller.update);
 router.delete('/:id', auth.required, controller.destroy);
-
+//reports
+router.get('/overview/:userId', auth.required, controller.overview);
+router.get('/aggregate', auth.optional, controller.aggregate);
 
 module.exports = router;

@@ -53,7 +53,6 @@ WalletSchema
             sort: {
                 date: 1
             },
-            // limit: 5
         }
     });
 
