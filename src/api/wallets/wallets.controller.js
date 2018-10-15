@@ -11,16 +11,6 @@ var ny = nm === 'December' ? n.getFullYear() + 1 : n.getFullYear();
 var cPeriod = m + " " + y;
 var nPeriod = nm + " " + ny;
 
-var view = (data) => {
-    return {
-        _id: data._id,
-        name: data.name,
-        amount: data.amount,
-        categoryId: data.categoryId,
-        transactions: data.transactions
-    }
-};
-
 var controller = {
     getEntries: function (req, res) {
         var name = req.query.name;
@@ -115,12 +105,12 @@ var controller = {
                     // };
                 })
                 var data = {
+                    userId: wallet.userId,
                     period: period,
                     totalBudget: budgetTotal,
-                    savingsWallets: savingsW,
-                    expenseWallets: expenseW,
+                    totalSavings: savingsW,
                     totalExpenses: totalExpenses,
-                    extraSavings: budgetTotal - (totalExpenses + savingsW),
+                    // extraSavings: budgetTotal - (totalExpenses + savingsW),
                 }
                 res.send(data);
             })
