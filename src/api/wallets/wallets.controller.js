@@ -177,8 +177,8 @@ var controller = {
                         })
                         var variance = wallet.amount - walletExpenses;
 
-                        x.push([parseFloat(wallet.amount)]);
-                        // x.push([parseFloat(wallet.amount), parseFloat(variance)]);
+                        // x.push([parseFloat(wallet.amount)]);
+                        x.push([parseFloat(wallet.amount), parseFloat(variance)]);
                         y.push([parseFloat(walletExpenses)]);
 
                         const mlr = new MLR(x, y);
@@ -186,23 +186,17 @@ var controller = {
 
                         console.log("X: [" + x, "] \nY: " + y);
                         //console.log(pred[0]);
-                        return {
+                        
+                        return wallet.period === cPeriod ? {
                             wallet: wallet.name,
+                            period: nPeriod,
+                            categoryId: wallet.categoryId,
                             type: wallet.type,
+                            userId: wallet.userId,
                             oldAmount: wallet.amount,
-                            predictedAmount: pred[0],
+                            predictedAmount: wallet.type === 'expense' ? pred[0] : wallet.amount,
                             amountToPredict: walletExpenses
-                        }
-                        // return wallet.period === cPeriod ? {
-                        //     wallet: wallet.name,
-                        //     period: nPeriod,
-                        //     categoryId: wallet.categoryId,
-                        //     type: wallet.type,
-                        //     userId: wallet.userId,
-                        //     oldAmount: wallet.amount,
-                        //     predictedAmount: wallet.type === 'expense' ? pred[0] : wallet.amount,
-                        //     amountToPredict: walletExpenses
-                        // } : null
+                        } : null
                     })
                 }
                 res.status(200).send(data);
