@@ -6,6 +6,7 @@ var moment = require('moment');
 var controller = {
     getEntries: function (req, res) {
         var walletId = req.query.walletId;
+
         return Transaction.find(walletId ? { walletId: walletId } : {})
         // .populate('first model', 'fields or minus fields')
             // .populate({ path: 'user', select: 'name' })
@@ -23,12 +24,12 @@ var controller = {
             .then((transactions) => {
                 res.status(200).send(transactions.map(transaction => {
                     return {
-                        _id: transaction.id,
-                        description: transaction.desc,
+                        _id: transaction._id,
+                        desc: transaction.desc,
                         amount: transaction.amount,
                         createdAt: moment(transaction.createdAt).format('MMMM DD, YYYY - dddd, hh:mm A')
-                    }
-                }))
+                    };
+                }));
             })
             .catch(handler.handleError(res));
     },
@@ -39,7 +40,7 @@ var controller = {
             .then((transaction) => {
                 res.status(200).send({
                     _id: transaction._id,
-                    description: transaction.desc,
+                    desc: transaction.desc,
                     amount: transaction.amount,
                     createdAt: moment(transaction.createdAt).format('MMMM DD, YYYY - dddd, hh:mm A')
                 })

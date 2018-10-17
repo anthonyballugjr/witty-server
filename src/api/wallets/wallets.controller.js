@@ -1,5 +1,6 @@
 var Wallet = require('./wallets.model');
 var handler = require('../../services/handler');
+var moment = require('moment');
 const MLR = require('ml-regression-multivariate-linear');
 
 var month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -69,14 +70,43 @@ var controller = {
             .populate('category', '-wallets')
             .exec()
             .then(handler.handleEntityNotFound(res))
-            .then(handler.respondWithResult(res))
+            .then((wallets) => {
+                res.status(200).send(wallets.map(wallet => {
+
+                   var category = wallet.category;
+                   var icon = "";
+                   category.map(i=>{
+                        icon = i.icon;
+                   })
+                   
+                    return {
+                        _id: wallet._id,
+                        name: wallet.name,
+                        type: wallet.type,
+                        amount: wallet.amount,
+                        categoryId: wallet.categoryId,
+                        period: wallet.period,
+                        createdAt: moment(wallet.createdAt).format('MMMM DD, YYYY - dddd'),
+                        icon: icon,
+                        transactions: wallet.transactions.length !==0 ? wallet.transactions.map(transaction => {
+                            return {
+                                _id: transaction._id,
+                                desc: transaction.desc,
+                                amount: transaction.amount,
+                                date: moment(transaction.createdAt).format('MMMM DD, YYYY - dddd')
+                            }
+                        }) : 0
+                    }
+                }))
+            })
+            // .then(handler.respondWithResult(res))
             .catch(handler.handleError(res));
     },
     overview: function (req, res) {
-        var user = req.params.userId
+        var userId = req.params.userId
         var period = req.query.period
 
-        return Wallet.find(period ? { userId: user, period: period } : { userId: user })
+        return Wallet.find(period ? { userId: userId, period: period } : { userId: userId })
             .populate('transactions')
             .exec()
             .then(handler.handleEntityNotFound(res))
@@ -105,7 +135,7 @@ var controller = {
                     // };
                 })
                 var data = {
-                    userId: wallet.userId,
+                    userId: userId,
                     period: period,
                     totalBudget: budgetTotal,
                     totalSavings: savingsW,
@@ -160,11 +190,12 @@ var controller = {
                     x: wallets.map(wallet => {
                         var walletExpenses = 0;
                         budgetTotal += wallet.amount;
-                        totalExpenses += walletExpenses;
+
 
                         wallet.transactions.forEach(transaction => {
                             walletExpenses += transaction.amount
                         })
+                        totalExpenses = totalExpenses + walletExpenses;
                         var variance = wallet.amount - walletExpenses;
 
                         // x.push([parseFloat(wallet.amount)]);
@@ -174,9 +205,9 @@ var controller = {
                         const mlr = new MLR(x, y);
                         var pred = mlr.predict(x[x.length - 1]);
 
-                        console.log("X: [" + x, "] \nY: " + y);
+                        // console.log("X: [" + x, "] \nY: " + y);
                         //console.log(pred[0]);
-                        
+
                         return wallet.period === cPeriod ? {
                             wallet: wallet.name,
                             period: nPeriod,
