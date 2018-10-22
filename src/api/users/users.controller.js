@@ -37,19 +37,19 @@ var controller = {
   },
   profile: function (req, res) {
     var email = req.payload.email;
+    console.log(email);
 
     return Users.findOne({ email: email })
-      .select('-hash -salt')
       .exec()
       .then(handler.handleEntityNotFound(res))
-      .then(handler.respondWithResult(res))
-      // .then((user) => {
-      //   res.status(200).json({
-      //     _id: user._id,
-      //     email: user.email,
-      //     name: user.name
-      //   });
-      // })
+      // .then(handler.respondWithResult(res))
+      .then((user) => {
+        res.status(200).json({
+          _id: user._id,
+          email: user.email,
+          name: user.name
+        });
+      })
       .catch(handler.handleError(res));
   }
 };

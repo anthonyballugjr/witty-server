@@ -13,7 +13,7 @@ passport.use(new LocalStrategy({
         return done(null, false, 'Email or password is incorrect');
       }
       else if (user.activated === false || user.activated === undefined) {
-        return done(null, false, 'Your account has not been verified. Check your email for account activation');
+        return done(null, false, 'Your account has not been verified. Check your email for account activation, if you are seeing this and you are one of our testers, kindly register again, DATABASE server has been reset.');
       }
       else {
         return done(null, user);
