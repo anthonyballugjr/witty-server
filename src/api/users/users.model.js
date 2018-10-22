@@ -16,6 +16,10 @@ var UsersSchema = new Schema({
   },
   hash: String,
   salt: String,
+  activated: {
+    type: Boolean,
+    default: false
+  }
 },
   {
     versionKey: false
@@ -80,12 +84,34 @@ UsersSchema.methods.generateJWT = function () {
   }, 'secret');
 };
 
+UsersSchema.methods.activationJWT = function () {
+  var today = new Date();
+  var expirationDate = new Date(today);
+  expirationDate.setHours(today.getHours() + 2);
+
+  return jwt.sign({
+    email: this.email,
+    id: this._id,
+    exp: parseInt(expirationDate.getTime() / 1000, 10),
+  }, 'secret');
+}
+
 UsersSchema.methods.toAuthJSON = function () {
   return {
     _id: this._id,
     email: this.email,
     name: this.name,
-    token: this.generateJWT(),
+    activated: this.activated,
+    token: this.generateJWT()
+  };
+};
+
+UsersSchema.methods.utilityAuth = function () {
+  return {
+    _id: this._id,
+    email: this.email,
+    activated: this.activated,
+    token: this.activationJWT()
   };
 };
 

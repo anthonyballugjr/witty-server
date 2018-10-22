@@ -16,5 +16,9 @@ router.get('/', controller.getEntries);
 router.get('/profile', auth.required, controller.profile);
 router.put('/', auth.required, controller.update);
 router.delete('/:id', auth.optional, controller.destroy);
+//
+router.get('/forgotPassword/:email', auth.optional, authentication.forgotPassword);
+router.get('/resetPassword/:token', auth.optional, authentication.resetPassword);
+router.get('/activate/:token', auth.optional, authentication.activate);
 
 module.exports = router;

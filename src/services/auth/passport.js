@@ -12,6 +12,11 @@ passport.use(new LocalStrategy({
       if (!user || !user.validatePassword(password)) {
         return done(null, false, 'Email or password is incorrect');
       }
-      return done(null, user);
+      else if (user.activated === false || user.activated === undefined) {
+        return done(null, false, 'Your account has not been verified. Check your email for account activation');
+      }
+      else {
+        return done(null, user);
+      }
     }).catch(done);
 }));

@@ -1,4 +1,6 @@
 var passport = require('passport');
+var mailer = require('../../services/mailer');
+var decode = require('jwt-decode');
 
 var Users = require('./users.model.js');
 
@@ -13,7 +15,6 @@ var authentication = {
         },
       });
     }
-
     if (!user.password) {
       return res.status(422).json({
         errors: {
@@ -27,8 +28,41 @@ var authentication = {
     finalUser.setPassword(user.password);
 
     return finalUser.save()
-      .then(() => res.json({ user: finalUser.toAuthJSON() }))
+      .then(() => {
+        var user = finalUser.utilityAuth();
+        var msg = mailer.activateOptions(user);
+        mailer.sendMail(msg);
+        res.json({
+          user: user,
+          message: 'Please check your email to complete the registration process.'
+        });
+      })
       .catch((err) => res.status(400).send(err.message));
+  },
+  activate: function (req, res) {
+    var token = decode(req.params.token);
+    var email = token.email;
+    var today = new Date();
+    var expired = parseInt(today.getTime() / 1000, 10);
+    var expiration = token.exp;
+
+    Users.findOne({ email: email })
+      .exec()
+      .then(function (user) {
+        if (user) {
+          if (expiration < expired) {
+            res.send('The activation token seems to be invalid or expired');
+          }
+          else {
+            user.activated = true;
+
+            return user.save()
+              .then(() => res.status(200).send('Your account has been activated! You can now login using the application'))
+              .catch((err) => res.status(400).send(err));
+          }
+        }
+      })
+
   },
   login: function (req, res, next) {
     console.log(req.headers);
@@ -86,7 +120,7 @@ var authentication = {
   changePassword: function (req, res) {
 
     var userId = req.payload.id;
-    
+
     var oldPassword = req.body.oldPassword
     var newPassword = req.body.newPassword
     var confirmPassword = req.body.confirmPassword
@@ -109,6 +143,53 @@ var authentication = {
         return user.save()
           .then(() => res.json(user))
           .catch((err) => res.status(400).send(err));
+      });
+  },
+  forgotPassword: function (req, res) {
+    var email = req.params.email;
+
+    return Users.findOne({ email: email })
+      .exec()
+      .then(function (user) {
+        if (!user) {
+          return res.status(401).send('User does not exist');
+        }
+        else {
+
+          var fUser = user.utilityAuth();
+
+          var msg = mailer.requestOptions(fUser);
+          mailer.sendMail(msg);
+          res.status(200).send('Request confirmed, please check your email to complete the process.')
+        }
+      })
+  },
+  resetPassword: function (req, res) {
+    var token = decode(req.params.token);
+    var exp = token.exp;
+    var email = token.email
+    var today = new Date();
+    var t = parseInt(today.getTime() / 1000, 10);
+    var temporary = Math.random().toString(36).substring(6);
+
+    return Users.findOne({ email: email })
+      .exec()
+      .then(function (user) {
+        if (user) {
+          if (exp < t) {
+            res.status(400).send('Password reset token seems to be invalid or expired');
+          }
+          else {
+            user.setPassword(temporary);
+            return user.save()
+              .then(() => {
+                var resetOptions = mailer.resetOptions(user, temporary);
+                mailer.sendMail(resetOptions);
+                res.status(200).send('Password has been reset for user: ' + user.email);
+              })
+              .catch((err) => res.status(400).send(err))
+          }
+        }
       });
   }
 };

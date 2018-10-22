@@ -37,7 +37,7 @@ var controller = {
       .then(handler.respondWithResult(res))
       .catch(handler.handleError(res));
   },
-  overview: (req, res) => {
+  overview: function (req, res) {
     var period = req.query.period
     var userId = req.params.userId
     return Archives.find(period ? { userId: userId, period: period } : { userId: userId })
@@ -71,7 +71,7 @@ var controller = {
         res.send(data);
       })
   },
-  create: (req, res) => {
+  create: function (req, res) {
     return Archives.create(req.body)
       .then(handler.respondWithResult(res, 201))
       .catch(handler.handleError(res));

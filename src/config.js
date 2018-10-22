@@ -3,7 +3,8 @@ var dotenv = require('dotenv-safe');
 
 dotenv.config({
   allowEmptyValues: true,
-  example: path.join(__dirname, '../.env.example')
+  example: path.join(__dirname, '../.env.example'),
+  path: path.join(__dirname, '../.env')
 });
 
 dotenv.load({
@@ -29,7 +30,11 @@ var config = {
   },
   seed: true,
   masterKey: requireProcessEnv('MASTER_KEY'),
-  mongoUri: requireProcessEnv('MONGODB_URI')
+  mongoUri: requireProcessEnv('MONGODB_URI'),
+  mailerAddress: requireProcessEnv('EMAIL'),
+  mailerPassword: requireProcessEnv('PASS'),
+  resetPassword: requireProcessEnv('RESETPASSWORD'),
+  activate: requireProcessEnv('ACTIVATE')
 };
 
 module.exports = config;
