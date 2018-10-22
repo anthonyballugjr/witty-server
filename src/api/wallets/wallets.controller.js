@@ -75,8 +75,10 @@ var controller = {
 
                    var category = wallet.category;
                    var icon = "";
+                   var catDesc = "";
                    category.map(i=>{
                         icon = i.icon;
+                        catDesc = i.desc;
                    })
                    
                     return {
@@ -88,6 +90,7 @@ var controller = {
                         period: wallet.period,
                         createdAt: moment(wallet.createdAt).format('MMMM DD, YYYY - dddd'),
                         icon: icon,
+                        category: catDesc,
                         transactions: wallet.transactions.length !==0 ? wallet.transactions.map(transaction => {
                             return {
                                 _id: transaction._id,
