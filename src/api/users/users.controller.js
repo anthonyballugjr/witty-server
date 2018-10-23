@@ -37,7 +37,6 @@ var controller = {
   },
   profile: function (req, res) {
     var email = req.payload.email;
-    console.log(email);
 
     return Users.findOne({ email: email })
       .exec()
@@ -47,7 +46,8 @@ var controller = {
         res.status(200).json({
           _id: user._id,
           email: user.email,
-          name: user.name
+          name: user.name,
+          activated: user.activated
         });
       })
       .catch(handler.handleError(res));

@@ -118,9 +118,7 @@ var authentication = {
       });
   },
   changePassword: function (req, res) {
-
     var userId = req.payload.id;
-
     var oldPassword = req.body.oldPassword
     var newPassword = req.body.newPassword
     var confirmPassword = req.body.confirmPassword
@@ -166,17 +164,17 @@ var authentication = {
   },
   resetPassword: function (req, res) {
     var token = decode(req.params.token);
-    var exp = token.exp;
+    var expiration = token.exp;
     var email = token.email
     var today = new Date();
-    var t = parseInt(today.getTime() / 1000, 10);
+    var expired = parseInt(today.getTime() / 1000, 10);
     var temporary = Math.random().toString(36).substring(6);
 
     return Users.findOne({ email: email })
       .exec()
       .then(function (user) {
         if (user) {
-          if (exp < t) {
+          if (expiration < expired) {
             res.status(400).send('Password reset token seems to be invalid or expired');
           }
           else {
