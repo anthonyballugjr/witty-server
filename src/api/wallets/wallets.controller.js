@@ -213,14 +213,12 @@ var controller = {
                         //console.log(pred[0]);
 
                         return wallet.period === cPeriod ? {
-                            wallet: wallet.name,
-                            period: nPeriod,
-                            categoryId: wallet.categoryId,
-                            type: wallet.type,
+                            name: wallet.name,
                             userId: wallet.userId,
-                            oldAmount: wallet.amount,
-                            predictedAmount: wallet.type === 'expense' ? pred[0] : wallet.amount,
-                            amountToPredict: walletExpenses
+                            type: wallet.type,
+                            amount: wallet.type === 'expense' ? pred[0] : wallet.amount,
+                            categoryId: wallet.category,
+                            period: nPeriod,
                         } : null
                     })
                 }

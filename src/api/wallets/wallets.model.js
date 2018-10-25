@@ -80,7 +80,7 @@ WalletSchema
             .catch(function (err) {
                 throw err;
             });
-    }, 'Wallet name already exists in that type, please enter a new wallet name.');
+    }, 'Wallet/s already exists in that type, please enter a new wallet name.');
 
 
 module.exports = mongoose.model('Wallet', WalletSchema);
