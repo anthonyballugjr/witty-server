@@ -10,11 +10,11 @@ router.get('/predict/:userId', auth.optional, controller.predict);
 //CRUD
 router.get('/', auth.optional, controller.getEntries);
 router.get('/user/:userId', auth.required, controller.getMyWallets);
+router.get('/savings', auth.optional, controller.getSavings);
 router.post('/', auth.required, controller.create);
 router.put('/:id', auth.required, controller.update);
 router.delete('/:id', auth.required, controller.destroy);
 //reports
 router.get('/overview/:userId', auth.required, controller.overview);
-router.get('/aggregate', auth.optional, controller.aggregate);
 
 module.exports = router;

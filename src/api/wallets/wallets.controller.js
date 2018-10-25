@@ -1,4 +1,5 @@
 var Wallet = require('./wallets.model');
+var Transaction = require('../transactions/transactions.model');
 var handler = require('../../services/handler');
 var moment = require('moment');
 const MLR = require('ml-regression-multivariate-linear');
@@ -73,14 +74,14 @@ var controller = {
             .then((wallets) => {
                 res.status(200).send(wallets.map(wallet => {
 
-                   var category = wallet.category;
-                   var icon = "";
-                   var catDesc = "";
-                   category.map(i=>{
+                    var category = wallet.category;
+                    var icon = "";
+                    var catDesc = "";
+                    category.map(i => {
                         icon = i.icon;
                         catDesc = i.desc;
-                   })
-                   
+                    })
+
                     return {
                         _id: wallet._id,
                         name: wallet.name,
@@ -91,7 +92,7 @@ var controller = {
                         createdAt: moment(wallet.createdAt).format('MMMM DD, YYYY - dddd'),
                         icon: icon,
                         category: catDesc,
-                        transactions: wallet.transactions.length !==0 ? wallet.transactions.map(transaction => {
+                        transactions: wallet.transactions.length !== 0 ? wallet.transactions.map(transaction => {
                             return {
                                 _id: transaction._id,
                                 desc: transaction.desc,
@@ -226,30 +227,29 @@ var controller = {
                 res.status(200).send(data);
             })
     },
-    aggregate: function (req, res) {
+    getSavings: function (req, res) {
 
         Wallet.aggregate([
-
-            { $match: { type: 'expense' } },
-            // {
-            // $lookup:
-            // {
-            //     from: 'Transaction',
-            //     localField: '_id',
-            //     foreignField: 'walletId',
-            //     as: 'transactions'
-            // }
-            // },
-            // { $group: { _id: '$name', totalBudget: { $sum: '$amount' }, totalTransaction: { $sum: '$transactions.amount' } } }
-            // { $group: { _id: '$name', totalBudget: '$amount' } }
+            { $match: { type: 'savings' } },
+            {
+                $lookup: {
+                    from: 'Transaction',
+                    localField: '_id',
+                    foreignField: 'walletId',
+                    as: 'transactions'
+                }
+            },
+            {
+                $group: { _id: '$name', amount: {$sum: 'transactions.amount'} }
+            }
         ])
             .exec()
             .then(handler.handleEntityNotFound(res))
-            .then(handler.respondWithResult(res))
-            // .then(wallets => {
-            //      res.send(wallets);
-            // })
-            .catch(handler.handleError(res))
+            // .then(handler.respondWithResult(res))
+            .then(savings => {
+                res.send(savings);
+            })
+            .catch(handler.handleError(res));
     }
 }
 module.exports = controller;

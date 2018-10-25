@@ -9,11 +9,14 @@ passport.use(new LocalStrategy({
 }, (email, password, done) => {
   Users.findOne({ email })
     .then((user) => {
-      if (!user || !user.validatePassword(password)) {
+      if (!user) {
+        return done(null, false, 'User not found');
+      }
+      else if (!user.email || !user.validatePassword(password)) {
         return done(null, false, 'Email or password is incorrect');
       }
       else if (user.activated === false || user.activated === undefined) {
-        return done(null, false, 'Your account has not been verified. Check your email for account activation, if you are seeing this and you are one of our testers, kindly register again, DATABASE server has been reset.');
+        return done(null, false, 'Your account has not been verified. Check your email for account activation.');
       }
       else {
         return done(null, user);
