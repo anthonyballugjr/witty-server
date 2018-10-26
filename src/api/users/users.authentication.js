@@ -34,7 +34,7 @@ var authentication = {
         mailer.sendMail(msg);
         res.json({
           user: user,
-          message: 'An email has been sent to ' + user.email +' for completion of the registration process.'
+          message: 'An email has been sent to ' + user.email + ' for completion of the registration process.'
         });
       })
       .catch((err) => res.status(400).send(err.message));
@@ -149,16 +149,18 @@ var authentication = {
     return Users.findOne({ email: email })
       .exec()
       .then(function (user) {
-        if (!user) {
-          return res.status(401).send('User does not exist');
-        }
-        else {
-
+        if (user) {
           var fUser = user.utilityAuth();
 
           var msg = mailer.requestOptions(fUser);
-          mailer.sendMail(msg);
-          res.status(200).send('Request confirmed, please check your email to complete the process.')
+          mailer.sendMail(msg)
+          .then(function (err, info){
+            if(err) res.status(400).send('Ooops! Something went wrong! Please try again.')
+            res.status(200).send('Request confirmed, please check your email to complete the process.'); console.log(info);
+          })
+        }
+        else {
+          return res.status(401).send('User does not exist');
         }
       })
   },
