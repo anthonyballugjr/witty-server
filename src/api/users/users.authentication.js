@@ -34,7 +34,7 @@ var authentication = {
         mailer.sendMail(msg);
         res.json({
           user: user,
-          message: 'Please check your email to complete the registration process.'
+          message: 'An email has been sent to ' + user.email +' for completion of the registration process.'
         });
       })
       .catch((err) => res.status(400).send(err.message));
