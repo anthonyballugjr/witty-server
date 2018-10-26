@@ -1,4 +1,4 @@
-var Deposit = require('./Deposits.model');
+var Deposit = require('./deposits.model');
 var handler = require('../../services/handler');
 var moment = require('moment');
 
