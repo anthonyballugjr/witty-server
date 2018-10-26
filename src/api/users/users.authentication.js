@@ -154,10 +154,9 @@ var authentication = {
 
           var msg = mailer.requestOptions(fUser);
           mailer.sendMail(msg)
-          .then(function (err, info){
-            if(err) res.status(400).send('Ooops! Something went wrong! Please try again.')
-            res.status(200).send('Request confirmed, please check your email to complete the process.'); console.log(info);
-          })
+            .then(() => {
+              res.status(200).send('Request confirmed, please check your email to complete the process.');
+            })
         }
         else {
           return res.status(401).send('User does not exist');
