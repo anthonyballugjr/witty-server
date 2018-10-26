@@ -14,6 +14,8 @@ module.exports = function (app) {
   app.use('/api/transactions', require('./api/transactions'));
   app.use('/api/archives', require('./api/archives'))
   app.use('/api/categories', require('./api/categories'));
+  app.use('/api/savings', require('./api/savings'));
+  app.use('/api/deposits', require('./api/deposits'));
   // app.use('/api/articles', masterKey, require('./api/articles'));
   // app.use('/api/users', expressAccessToken, masterKey, require('./api/users'));
 };
