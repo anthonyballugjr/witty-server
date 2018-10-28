@@ -1,5 +1,6 @@
 var nodemailer = require('nodemailer');
 var config = require('../../config');
+var path = require('path');
 
 var transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -11,7 +12,8 @@ var transporter = nodemailer.createTransport({
 
 module.exports = {
     requestOptions: function (user) {
-        var link = JSON.stringify(config.resetPassword + user.token);
+        // var link = config.resetPassword + user.token;
+        var link = path.join(config.resetPassword,user.token);
         return {
             from: 'Witty Wallet<no-reply@config.mailerAddress>',
             to: user.email,
