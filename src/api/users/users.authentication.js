@@ -149,12 +149,12 @@ var authentication = {
 
     return Users.findOne({ email: email })
       .exec()
-      .then(function (user) {
+      .then(async function (user) {
         if (user) {
-          var fUser = user.utilityAuth();
+          const fUser = await user.utilityAuth();
 
-          var msg = mailer.requestOptions(fUser);
-          mailer.sendMail(msg);
+          const msg = await mailer.requestOptions(fUser);
+          await mailer.sendMail(msg);
           res.status(200).send('Request confirmed, please check your email to complete the process.');
         }
         else {
