@@ -7,11 +7,14 @@ const MLR = require('ml-regression-multivariate-linear');
 var month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 var n = new Date();
 var m = month[n.getMonth()];
-var nm = month[n.getMonth() + 1];
+var nm = m === 'December' ? month[n.getMonth() - 11] : month[n.getMonth() + 1];
+var pm = m === 'January' ? month[n.getMonth + 11] : month[n.getMonth() - 1];
 var y = n.getFullYear();
-var ny = nm === 'December' ? n.getFullYear() + 1 : n.getFullYear();
+var ny = nm === 'January' ? n.getFullYear() + 1 : n.getFullYear();
+var py = pm === 'December' ? n.getFullYear() - 1 : n.getFullYear();
 var cPeriod = m + " " + y;
 var nPeriod = nm + " " + ny;
+var pPeriod = pm + " " + py
 
 var controller = {
     getEntries: function (req, res) {
@@ -151,6 +154,52 @@ var controller = {
             // .then(handler.respondWithResult(res))
             .catch(handler.handleError(res));
     },
+    getPrevious: function (req, res) {
+        var userId = req.params.userId
+
+        return Wallet.find({ userId: userId })
+            .where('period', pPeriod)
+            .populate('transactions')
+            .exec()
+            .then(handler.handleEntityNotFound(res))
+            .then(wallets => {
+                var budgetTotal = 0;
+                var totalExpenses = 0;
+                var savingsW = 0;
+                var expenseW = 0;
+                wallets.map(wallet => {
+                    var walletExpenses = 0;
+                    wallet.transactions.forEach(transaction => {
+                        walletExpenses = walletExpenses + transaction.amount
+                    });
+
+                    expenseW = wallet.type === "expense" ? expenseW + wallet.amount : expenseW
+                    savingsW = wallet.type === "savings" ? savingsW + wallet.amount : savingsW
+                    budgetTotal = budgetTotal + wallet.amount;
+                    totalExpenses = totalExpenses + walletExpenses;
+                    // return {
+                    //     walletType: wallet.type,
+                    //     walletName: wallet.name,
+                    //     walletAmount: wallet.amount,
+                    //     walletTransactions: walletExpenses,
+                    //     walletCategory: wallet.categoryId,
+                    //     period: wallet.period
+                    // };
+                })
+                var data = {
+                    userId: userId,
+                    period: period,
+                    totalBudget: budgetTotal,
+                    totalSavings: savingsW,
+                    totalExpenses: totalExpenses,
+                    // extraSavings: budgetTotal - (totalExpenses + savingsW),
+                }
+                res.send(data);
+            }).
+            then()
+            // .then(handler.respondWithResult(res))
+            .catch(handler.handleError(res));
+    },
     getNext: function (req, res) {
         var userId = req.params.userId;
 
@@ -238,7 +287,7 @@ var controller = {
                 }
             },
             {
-                $group: { _id: '$name', amount: {$sum: 'transactions.amount'} }
+                $group: { _id: '$name', amount: { $sum: 'transactions.amount' } }
             }
         ])
             .exec()

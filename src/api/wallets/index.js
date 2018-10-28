@@ -16,5 +16,4 @@ router.put('/:id', auth.required, controller.update);
 router.delete('/:id', auth.required, controller.destroy);
 //reports
 router.get('/overview/:userId', auth.required, controller.overview);
-
 module.exports = router;

@@ -1,6 +1,7 @@
 var passport = require('passport');
 var mailer = require('../../services/mailer');
 var decode = require('jwt-decode');
+var handler = require('../../services/handler');
 
 var Users = require('./users.model.js');
 
@@ -154,12 +155,13 @@ var authentication = {
 
           var msg = mailer.requestOptions(fUser);
           mailer.sendMail(msg)
-          res.status(200).send('Request confirmed, please check your email to complete the process.');
+          res.status(200).json({ message: 'Request confirmed, please check your email to complete the process.' });
         }
         else {
           return res.status(401).send('User does not exist');
         }
       })
+      .catch(handler.handleError(res));
   },
   resetPassword: function (req, res) {
     var token = decode(req.params.token);
