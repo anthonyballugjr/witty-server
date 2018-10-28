@@ -11,7 +11,7 @@ var transporter = nodemailer.createTransport({
 
 module.exports = {
     requestOptions: function (user) {
-        var link = config.resetPassword + user.token;
+        var link = JSON.stringify(config.resetPassword + user.token);
         return {
             from: 'Witty Wallet<no-reply@config.mailerAddress>',
             to: user.email,
