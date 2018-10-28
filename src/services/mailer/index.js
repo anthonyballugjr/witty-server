@@ -16,7 +16,9 @@ module.exports = {
             from: 'Witty Wallet<no-reply@config.mailerAddress>',
             to: user.email,
             subject: 'Witty Wallet reset password request',
-            html: '<p>You or (someone else) has requested to change your password, please click <a href=\"' + link + '"\>' + 'this link' + '</a> to complete the process.</p> <p>If you did not remember making this request, please ignore this message and your password will remain unchanged.</p><p>Regards,</p><p>Anthony from the Witty Team</p>'
+            // html: '<p>You or (someone else) has requested to change your password, please click <a href=\"' + link + '"\>' + 'this link' + '</a> to complete the process.</p> <p>If you did not remember making this request, please ignore this message and your password will remain unchanged.</p><p>Regards,</p><p>Anthony from the Witty Team</p>'
+
+            html: `Click <a href="${link}">this link</a>.`
         }
     },
     resetOptions: function (user, temp) {
