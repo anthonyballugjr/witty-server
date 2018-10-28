@@ -20,7 +20,9 @@ module.exports = {
   handleError: function (res, statusCode) {
     statusCode = statusCode || 500;
     return function (err) {
-      res.status(statusCode).send(err.message);
+      // res.status(statusCode).send(err.message);
+      res.status(statusCode).send(err);
+
     };
   }
 };
