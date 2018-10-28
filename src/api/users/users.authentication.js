@@ -154,8 +154,8 @@ var authentication = {
           var fUser = user.utilityAuth();
 
           var msg = mailer.requestOptions(fUser);
-          mailer.sendMail(msg)
-          res.status(200).json({ message: 'Request confirmed, please check your email to complete the process.' });
+          mailer.sendMail(msg);
+          res.status(200).send('Request confirmed, please check your email to complete the process.');
         }
         else {
           return res.status(401).send('User does not exist');
