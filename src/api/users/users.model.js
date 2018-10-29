@@ -22,7 +22,29 @@ var UsersSchema = new Schema({
   }
 },
   {
-    versionKey: false
+    versionKey: false,
+    toJSON: {
+      virtuals: true
+    },
+    toObject: {
+      virtuals: true
+    }
+  });
+
+UsersSchema
+  .virtual('eWallets', {
+    ref: 'Expense',
+    localField: '_id',
+    foreignField: 'userId',
+    justOne: false
+  });
+
+UsersSchema
+  .virtual('sWallets', {
+    ref: 'Savings',
+    localField: '_id',
+    foreignField: 'userId',
+    justOne: false
   });
 
 // Validate empty email

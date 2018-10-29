@@ -1,7 +1,6 @@
 var Savings = require('./savings.model');
 var handler = require('../../services/handler');
 var moment = require('moment');
-const MLR = require('ml-regression-multivariate-linear');
 
 
 var controller = {
@@ -9,15 +8,15 @@ var controller = {
         var name = req.query.name;
 
         return Savings.find(name ? { name: name } : {})
-            .populate('transactions')
+            .populate('deposits')
             .exec()
             .then((savings) => {
                 res.status(200).send(savings.map(saving => {
                     return {
                         _id: saving._id,
                         name: saving.name,
-                        amount: savings.amount,
-                        deposits: savings.deposits.length !== 0 ? savings.deposits : 'No Deposits',
+                        goal: saving.goal,
+                        deposits: saving.deposits.length !== 0 ? saving.deposits : 0,
                     };
                 }));
             })
@@ -52,7 +51,7 @@ var controller = {
             .then(handler.respondWithResult(res, 204))
             .catch(handler.handleError(res));
     },
-    getMySavingss: function (req, res) {
+    getMySavings: function (req, res) {
         var userId = req.params.userId
 
         return Savings.find({ userId: userId })
@@ -70,7 +69,7 @@ var controller = {
                     return {
                         _id: saving._id,
                         name: saving.name,
-                        amount: saving.amount,
+                        goal: saving.goal,
                         totalDesposits: savingDeposits,
                         createdAt: moment(Savings.createdAt).format('MMMM DD, YYYY - dddd'),
                         deposits: saving.deposits.length !== 0 ? saving.deposits.map(deposit => {

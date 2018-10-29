@@ -1,4 +1,4 @@
-var Wallet = require('./wallets.model');
+var Expense = require('./expenses.model');
 var Transaction = require('../transactions/transactions.model');
 var handler = require('../../services/handler');
 var moment = require('moment');
@@ -20,25 +20,26 @@ var controller = {
     getEntries: function (req, res) {
         var name = req.query.name;
 
-        return Wallet.find(name ? { name: name } : {})
+        return Expense.find(name ? { name: name } : {})
             .populate('transactions')
             .exec()
-            .then((wallets) => {
-                res.status(200).send(wallets.map(wallet => {
-                    return {
-                        _id: wallet._id,
-                        name: wallet.name,
-                        amount: wallet.amount,
-                        transactions: wallet.transactions.length !== 0 ? wallet.transactions : 'No Transactions',
-                        period: wallet.period
-                    };
-                }));
-            })
-            // .then(handler.respondWithResult(res))
+            .then(handler.handleEntityNotFound(res))
+            // .then((wallets) => {
+            //     res.status(200).send(wallets.map(wallet => {
+            //         return {
+            //             _id: wallet._id,
+            //             name: wallet.name,
+            //             amount: wallet.amount,
+            //             transactions: wallet.transactions.length !== 0 ? wallet.transactions : 'No Transactions',
+            //             period: wallet.period
+            //         };
+            //     }));
+            // })
+            .then(handler.respondWithResult(res))
             .catch(handler.handleError(res));
     },
     create: function (req, res) {
-        return Wallet.create(req.body)
+        return Expense.create(req.body)
             .then(handler.respondWithResult(res, 201))
             .catch(handler.handleError(res));
     },
@@ -46,7 +47,7 @@ var controller = {
         if (req.body._id) {
             Reflect.deleteProperty(req.body, '_id');
         }
-        return Wallet.findByIdAndUpdate(req.params.id, req.body, {
+        return Expense.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             upsert: true,
             setDefaultsOnInsert: true,
@@ -60,7 +61,7 @@ var controller = {
         if (req.body._id) {
             Reflect.deleteProperty(req.body, '_id');
         }
-        return Wallet.findByIdAndRemove(req.params.id).exec()
+        return Expense.findByIdAndRemove(req.params.id).exec()
             .then(handler.handleEntityNotFound(res))
             .then(handler.respondWithResult(res, 204))
             .catch(handler.handleError(res));
@@ -69,7 +70,7 @@ var controller = {
         var period = req.query.period
         var user = req.params.userId
 
-        return Wallet.find(period ? { userId: user, period: period } : { userId: user })
+        return Expense.find(period ? { userId: user, period: period } : { userId: user })
             .populate('transactions')
             .populate('category', '-wallets')
             .exec()
@@ -113,7 +114,7 @@ var controller = {
         var userId = req.params.userId
         var period = req.query.period
 
-        return Wallet.find(period ? { userId: userId, period: period } : { userId: userId })
+        return Expense.find(period ? { userId: userId, period: period } : { userId: userId })
             .populate('transactions')
             .exec()
             .then(handler.handleEntityNotFound(res))
@@ -157,7 +158,7 @@ var controller = {
     getPrevious: function (req, res) {
         var userId = req.params.userId
 
-        return Wallet.find({ userId: userId })
+        return Expense.find({ userId: userId })
             .where('period', pPeriod)
             .populate('transactions')
             .exec()
@@ -203,7 +204,7 @@ var controller = {
     getNext: function (req, res) {
         var userId = req.params.userId;
 
-        Wallet.find({ userId: userId })
+        Expense.find({ userId: userId })
             .where('period', cPeriod)
             .exec()
             .then((wallets) => {
@@ -221,13 +222,12 @@ var controller = {
                 }
                 res.send(nextData);
             })
-
     },
     predict: function (req, res) {
         var userId = req.params.userId;
         var name = req.query.name;
 
-        Wallet.find({ userId: userId })
+        Expense.find({ userId: userId })
             .where('name', name)
             .populate('transactions')
             .exec()
@@ -251,15 +251,11 @@ var controller = {
                         totalExpenses = totalExpenses + walletExpenses;
                         var variance = wallet.amount - walletExpenses;
 
-                        // x.push([parseFloat(wallet.amount)]);
                         x.push([parseFloat(wallet.amount), parseFloat(variance)]);
                         y.push([parseFloat(walletExpenses)]);
 
                         const mlr = new MLR(x, y);
                         var pred = mlr.predict(x[x.length - 1]);
-
-                        // console.log("X: [" + x, "] \nY: " + y);
-                        //console.log(pred[0]);
 
                         return wallet.period === cPeriod ? {
                             name: wallet.name,
@@ -273,30 +269,6 @@ var controller = {
                 }
                 res.status(200).send(data);
             })
-    },
-    getSavings: function (req, res) {
-
-        Wallet.aggregate([
-            { $match: { type: 'savings' } },
-            {
-                $lookup: {
-                    from: 'Transaction',
-                    localField: '_id',
-                    foreignField: 'walletId',
-                    as: 'transactions'
-                }
-            },
-            {
-                $group: { _id: '$name', amount: { $sum: 'transactions.amount' } }
-            }
-        ])
-            .exec()
-            .then(handler.handleEntityNotFound(res))
-            // .then(handler.respondWithResult(res))
-            .then(savings => {
-                res.send(savings);
-            })
-            .catch(handler.handleError(res));
     }
 }
 module.exports = controller;

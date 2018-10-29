@@ -1,8 +1,7 @@
 var mongoose = require('mongoose');
-// var Users = require('../models/users');
 var Schema = mongoose.Schema;
 
-var WalletSchema = new Schema({
+var SavingSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -13,23 +12,11 @@ var WalletSchema = new Schema({
         ref: 'User',
         required: true,
     },
-    type: {
-        type: String,
-        required: true,
-        lowercase: true
-    },
-    amount: {
+    goal: {
         type: Number,
         required: true
-    },
-    categoryId: {
-        type: String,
-        ref: 'Category'
-    },
-    period: {
-        type: String,
-        required: true
     }
+
 },
     {
         timestamps: true,
@@ -43,9 +30,9 @@ var WalletSchema = new Schema({
         }
     });
 
-WalletSchema
-    .virtual('transactions', {
-        ref: 'Transaction',
+SavingSchema
+    .virtual('deposits', {
+        ref: 'Deposit',
         localField: '_id',
         foreignField: 'walletId',
         justOne: false,
@@ -56,18 +43,11 @@ WalletSchema
         }
     });
 
-WalletSchema
-    .virtual('category', {
-        ref: 'Category',
-        localField: 'categoryId',
-        foreignField: '_id',
-        justOne: false,
-    });
 
-WalletSchema
-    .path('type')
+SavingSchema
+    .path('name')
     .validate(function (value) {
-        return this.constructor.findOne({ type: value, name: this.name, period: this.period }).exec()
+        return this.constructor.findOne({ name: value }).exec()
             .then(wallet => {
                 if (wallet) {
                     if (this._id === wallet._id) {
@@ -80,7 +60,7 @@ WalletSchema
             .catch(function (err) {
                 throw err;
             });
-    }, 'Wallet/s already exists in that type, please enter a new wallet name.');
+    }, 'Wallet already exists, please enter a new wallet name.');
 
 
-module.exports = mongoose.model('Wallet', WalletSchema);
+module.exports = mongoose.model('Savings', SavingSchema);

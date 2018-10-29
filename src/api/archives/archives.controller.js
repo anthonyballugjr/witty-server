@@ -1,6 +1,5 @@
 var Archives = require('./archives.model');
 var handler = require('../../services/handler');
-var Wallets = require('../wallets/wallets.model');
 
 var controller = {
   getEntries: (req, res) => {
@@ -49,9 +48,9 @@ var controller = {
         var grandTotalSavings = 0;
         var data = {
           x: archives.map(archive => {
-            grandTotalBudget = grandTotalBudget + archive.totalBudget
-            grandTotalExpenses = grandTotalExpenses + archive.totalExpenses
-            grandTotalSavings = grandTotalSavings + archive.totalSavings
+            grandTotalBudget += archive.totalBudget
+            grandTotalExpenses += archive.totalExpenses
+            grandTotalSavings += archive.totalSavings
             return {
               period: archive.period,
               totalBudget: archive.totalBudget,

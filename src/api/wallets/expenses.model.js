@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');
+// var Users = require('../models/users');
 var Schema = mongoose.Schema;
 
-var SavingSchema = new Schema({
+var ExpenseSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -12,11 +13,18 @@ var SavingSchema = new Schema({
         ref: 'User',
         required: true,
     },
-    goal: {
+    amount: {
         type: Number,
         required: true
+    },
+    categoryId: {
+        type: String,
+        ref: 'Category'
+    },
+    period: {
+        type: String,
+        required: true
     }
-
 },
     {
         timestamps: true,
@@ -30,9 +38,9 @@ var SavingSchema = new Schema({
         }
     });
 
-SavingSchema
-    .virtual('deposits', {
-        ref: 'Deposits',
+ExpenseSchema
+    .virtual('transactions', {
+        ref: 'Transaction',
         localField: '_id',
         foreignField: 'walletId',
         justOne: false,
@@ -43,11 +51,19 @@ SavingSchema
         }
     });
 
+ExpenseSchema
+    .virtual('category', {
+        ref: 'Category',
+        localField: 'categoryId',
+        foreignField: '_id',
+        justOne: false,
+    });
 
-SavingSchema
-    .path('name')
+ExpenseSchema
+    .path('period')
     .validate(function (value) {
-        return this.constructor.findOne({ name: value }).exec()
+        return this.constructor.findOne({ period: value, name: this.name })
+            .exec()
             .then(wallet => {
                 if (wallet) {
                     if (this._id === wallet._id) {
@@ -63,4 +79,4 @@ SavingSchema
     }, 'Wallet already exists, please enter a new wallet name.');
 
 
-module.exports = mongoose.model('Savings', SavingSchema);
+module.exports = mongoose.model('Expense', ExpenseSchema);
