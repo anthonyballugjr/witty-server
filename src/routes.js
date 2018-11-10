@@ -16,6 +16,7 @@ module.exports = function (app) {
   app.use('/api/transactions', require('./api/transactions'));
   app.use('/api/deposits', require('./api/deposits'));
   app.use('/api/reports', require('./api/reports'));
+  app.use('/api/arduino', require('./api/arduino'));
   // app.use('/api/articles', masterKey, require('./api/articles'));
   // app.use('/api/users', expressAccessToken, masterKey, require('./api/users'));
 };
