@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var controller = require('./main.controller');
+var controller = require('./controller');
 
 // ROUTES
 // GET: api/main/
