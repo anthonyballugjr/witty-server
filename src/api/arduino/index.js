@@ -7,8 +7,8 @@ var controller = require('./controller');
 // GET: api/main/
 
 router.get('/', controller.home);
-// router.get('/:id', controller.getEntry); 
-// router.post('/', controller.create); 
+router.post('/sendData', controller.count); 
+router.get('/getData', controller.feed); 
 // router.put('/:id', controller.update);
 // router.delete('/:id', controller.destroy); 
 
