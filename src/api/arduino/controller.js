@@ -9,7 +9,6 @@ var controller = {
         data = count;
 
         res.status(200).send({count: data});
-        counter = 0;
         console.log(count);
     },
     feed: function (req, res) {
