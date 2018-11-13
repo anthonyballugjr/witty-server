@@ -7,7 +7,7 @@ var controller = {
     postData: function (req, res) {
         var count = req.body.count;
 
-        res.status(200).send(count);
+        res.status(200).send({count: count});
         counter = 0;
         console.log(count);
     },
