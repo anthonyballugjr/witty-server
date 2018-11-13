@@ -2,7 +2,7 @@ var counter = 0;
 
 var controller = {
     home: function (req, res) {
-        res.status(200).send({ Message: 'Hello Reindel', Test: 'Server Test' })
+        res.status(200).send({ Message: 'Hello Reindel', Test: 'Server Test', counter: counter })
     },
     count: function (req, res) {
         var count = req;
@@ -13,7 +13,7 @@ var controller = {
         console.log(counter);
     },
     feed: function (req, res) {
-        res.status(200).send(counter);
+        res.send(counter);
     }
 }
 
