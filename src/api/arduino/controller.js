@@ -5,7 +5,8 @@ var controller = {
         res.status(200).send({ Message: 'Hello Reindel', Test: 'Server Test', counter: counter })
     },
     postData: function (req, res) {
-        var count = req;
+        var count = req.body.count;
+        console.log(count);
 
         if (count === 10) counter = 10;
         res.status(200).send(counter);
