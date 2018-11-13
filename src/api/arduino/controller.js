@@ -1,4 +1,4 @@
-const data = 0;
+const data = 10;
 
 var controller = {
     home: function (req, res) {
