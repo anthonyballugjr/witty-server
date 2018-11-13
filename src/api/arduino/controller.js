@@ -4,7 +4,7 @@ var controller = {
     home: function (req, res) {
         res.status(200).send({ Message: 'Hello Reindel', Test: 'Server Test', counter: counter })
     },
-    count: function (req, res) {
+    postData: function (req, res) {
         var count = req;
 
         if (count === 10) counter = 10;
