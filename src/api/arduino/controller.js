@@ -1,4 +1,4 @@
-var counter = 0;
+
 
 var controller = {
     home: function (req, res) {
@@ -6,12 +6,10 @@ var controller = {
     },
     postData: function (req, res) {
         var count = req.body.count;
-        console.log(count);
 
-        if (count === 10) counter = 10;
-        res.status(200).send(counter);
+        res.status(200).send(count);
         counter = 0;
-        console.log(counter);
+        console.log(count);
     },
     feed: function (req, res) {
         res.send(counter);
