@@ -6,6 +6,7 @@ var controller = {
     },
     postData: function (req, res) {
         var trigger = req.body.trigger;
+        console.log(trigger);
 
         if (trigger === 'on') {
             arduinoSwitch = 'on';
