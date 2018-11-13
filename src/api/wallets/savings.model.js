@@ -20,7 +20,7 @@ var SavingSchema = new Schema({
 },
     {
         timestamps: true,
-        id: false,
+        id:false,
         versionKey: false,
         toJSON: {
             virtuals: true
@@ -47,7 +47,8 @@ SavingSchema
 SavingSchema
     .path('name')
     .validate(function (value) {
-        return this.constructor.findOne({ name: value }).exec()
+        return this.constructor.findOne({ name: this.name })
+            .exec()
             .then(wallet => {
                 if (wallet) {
                     if (this._id === wallet._id) {

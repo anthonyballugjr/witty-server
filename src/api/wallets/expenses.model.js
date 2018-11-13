@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-// var Users = require('../models/users');
 var Schema = mongoose.Schema;
 
 var ExpenseSchema = new Schema({

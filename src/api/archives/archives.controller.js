@@ -30,7 +30,7 @@ var controller = {
           totalBudget: archive.totalBudget,
           totalExpenses: archive.totalExpenses,
           totalSavings: archive.totalSavings,
-          extraSavings: archive.totalBudget - (archive.totalExpenses + archive.totalSavings)
+          extraSavings: archive.extraSavings
         });
       })
       .then(handler.respondWithResult(res))
@@ -50,13 +50,13 @@ var controller = {
           x: archives.map(archive => {
             grandTotalBudget += archive.totalBudget
             grandTotalExpenses += archive.totalExpenses
-            grandTotalSavings += archive.totalSavings
+            grandTotalSavings += archive.totalDeposits
             return {
               period: archive.period,
               totalBudget: archive.totalBudget,
               totalExpenses: archive.totalExpenses,
-              totalSavings: archive.totalSavings,
-              extraSavings: archive.totalBudget - (archive.totalExpenses + archive.totalSavings)
+              totalSavings: archive.totalDeposits,
+              extraSavings: archive.extraSavings
             }
           }),
           grandTotalBudget: grandTotalBudget ? grandTotalBudget : 0,
@@ -73,6 +73,15 @@ var controller = {
   create: function (req, res) {
     return Archives.create(req.body)
       .then(handler.respondWithResult(res, 201))
+      .catch(handler.handleError(res));
+  },
+  destroy: function (req, res){
+    if (req.body._id) {
+      Reflect.deleteProperty(req.body, '_id');
+    }
+    return Archives.findByIdAndRemove(req.params.id).exec()
+      .then(handler.handleEntityNotFound(res))
+      .then(handler.respondWithResult(res, 204))
       .catch(handler.handleError(res));
   }
 

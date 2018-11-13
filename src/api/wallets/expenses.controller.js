@@ -8,7 +8,7 @@ var month = ["January", "February", "March", "April", "May", "June", "July", "Au
 var n = new Date();
 var m = month[n.getMonth()];
 var nm = m === 'December' ? month[n.getMonth() - 11] : month[n.getMonth() + 1];
-var pm = m === 'January' ? month[n.getMonth + 11] : month[n.getMonth() - 1];
+var pm = m === 'January' ? month[n.getMonth() + 11] : month[n.getMonth() - 1];
 var y = n.getFullYear();
 var ny = nm === 'January' ? n.getFullYear() + 1 : n.getFullYear();
 var py = pm === 'December' ? n.getFullYear() - 1 : n.getFullYear();
@@ -107,7 +107,6 @@ var controller = {
                     }
                 }))
             })
-            // .then(handler.respondWithResult(res))
             .catch(handler.handleError(res));
     },
     overview: function (req, res) {
@@ -121,16 +120,12 @@ var controller = {
             .then(wallets => {
                 var budgetTotal = 0;
                 var totalExpenses = 0;
-                var savingsW = 0;
-                var expenseW = 0;
                 wallets.map(wallet => {
                     var walletExpenses = 0;
                     wallet.transactions.forEach(transaction => {
                         walletExpenses = walletExpenses + transaction.amount
                     });
 
-                    expenseW = wallet.type === "expense" ? expenseW + wallet.amount : expenseW
-                    savingsW = wallet.type === "savings" ? savingsW + wallet.amount : savingsW
                     budgetTotal = budgetTotal + wallet.amount;
                     totalExpenses = totalExpenses + walletExpenses;
                     // return {
@@ -146,58 +141,11 @@ var controller = {
                     userId: userId,
                     period: period,
                     totalBudget: budgetTotal,
-                    totalSavings: savingsW,
                     totalExpenses: totalExpenses,
                     // extraSavings: budgetTotal - (totalExpenses + savingsW),
                 }
                 res.send(data);
             })
-            // .then(handler.respondWithResult(res))
-            .catch(handler.handleError(res));
-    },
-    getPrevious: function (req, res) {
-        var userId = req.params.userId
-
-        return Expense.find({ userId: userId })
-            .where('period', pPeriod)
-            .populate('transactions')
-            .exec()
-            .then(handler.handleEntityNotFound(res))
-            .then(wallets => {
-                var budgetTotal = 0;
-                var totalExpenses = 0;
-                var savingsW = 0;
-                var expenseW = 0;
-                wallets.map(wallet => {
-                    var walletExpenses = 0;
-                    wallet.transactions.forEach(transaction => {
-                        walletExpenses = walletExpenses + transaction.amount
-                    });
-
-                    expenseW = wallet.type === "expense" ? expenseW + wallet.amount : expenseW
-                    savingsW = wallet.type === "savings" ? savingsW + wallet.amount : savingsW
-                    budgetTotal = budgetTotal + wallet.amount;
-                    totalExpenses = totalExpenses + walletExpenses;
-                    // return {
-                    //     walletType: wallet.type,
-                    //     walletName: wallet.name,
-                    //     walletAmount: wallet.amount,
-                    //     walletTransactions: walletExpenses,
-                    //     walletCategory: wallet.categoryId,
-                    //     period: wallet.period
-                    // };
-                })
-                var data = {
-                    userId: userId,
-                    period: period,
-                    totalBudget: budgetTotal,
-                    totalSavings: savingsW,
-                    totalExpenses: totalExpenses,
-                    // extraSavings: budgetTotal - (totalExpenses + savingsW),
-                }
-                res.send(data);
-            }).
-            then()
             // .then(handler.respondWithResult(res))
             .catch(handler.handleError(res));
     },
@@ -257,18 +205,18 @@ var controller = {
                         const mlr = new MLR(x, y);
                         var pred = mlr.predict(x[x.length - 1]);
 
-                        return wallet.period === cPeriod ? {
+                        return wallet.period === pPeriod ? {
                             name: wallet.name,
                             userId: wallet.userId,
-                            type: wallet.type,
-                            amount: wallet.type === 'expense' ? pred[0] : wallet.amount,
-                            categoryId: wallet.category,
-                            period: nPeriod,
+                            amount: wallet.categoryId === 'bll' ? wallet.amount : pred[0],
+                            categoryId: wallet.categoryId,
+                            period: cPeriod,
                         } : null
                     })
                 }
                 res.status(200).send(data);
             })
+            .catch(handler.handleError(res));
     }
 }
 module.exports = controller;

@@ -8,7 +8,7 @@ var controller = {
         var walletId = req.query.walletId;
 
         return Transaction.find(walletId ? { walletId: walletId } : {})
-        // .populate('first model', 'fields or minus fields')
+            // .populate('first model', 'fields or minus fields')
             // .populate({ path: 'user', select: 'name' })
             // .populate({
             //     path: 'second model',
@@ -22,12 +22,14 @@ var controller = {
             .exec()
             .then(handler.handleEntityNotFound(res))
             .then((transactions) => {
+                
                 res.status(200).send(transactions.map(transaction => {
+                    var today = moment().format('MMMM DD, YYYY');
                     return {
                         _id: transaction._id,
                         desc: transaction.desc,
                         amount: transaction.amount,
-                        createdAt: moment(transaction.createdAt).format('MMMM DD, YYYY - dddd, hh:mm A')
+                        createdAt: (moment(transaction.createdAt).format('MMMM DD, YYYY') === today) ? `Today - ${moment(transaction.createdAt).format('hh:mm A')}` : moment(transaction.createdAt).format('MMMM DD, YYYY - dddd, hh:mm A')
                     };
                 }));
             })

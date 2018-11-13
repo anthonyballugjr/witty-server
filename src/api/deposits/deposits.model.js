@@ -11,7 +11,10 @@ var DepositSchema = new Schema({
         type: String,
         ref: 'Savings'
     },
-    period: String
+    period: {
+        type: String,
+        required: true
+    }
 },
     {
         timestamps: true,

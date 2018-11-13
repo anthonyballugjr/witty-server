@@ -17,7 +17,7 @@ var pPeriod = pm + " " + py
 
 var controller = {
     budgetProfile: function (req, res) {
-        var userId = req.params.id;
+        var userId = req.params.userId;
 
         return User.findOne({ _id: userId })
             .populate({
@@ -73,6 +73,60 @@ var controller = {
                     averageMonthlyExpenses: overallExpenses / ewallets.length
                 }
                 res.status(200).send(data);
+            })
+            .catch(handler.handleError(res));
+    },
+    overview: function (req, res) {
+        var userId = req.params.userId;
+        var queryPeriod = req.query.period;
+
+        return User.findOne({ _id: userId })
+            .populate({
+                path: 'eWallets',
+                populate: { path: 'transactions' }
+            })
+            .populate({
+                path: 'sWallets',
+                populate: { path: 'deposits' }
+            })
+            .exec()
+            .then(handler.handleEntityNotFound(res))
+            .then(user => {
+                var ewallets = user.eWallets;
+                var swallets = user.sWallets;
+
+                var totalEWallets = 0;
+                var totalExpenses = 0;
+                ewallets.map(ewallet => {
+                    var walletExpenses = 0;
+                    ewallet.transactions.forEach(transaction => {
+                        if (ewallet.period === queryPeriod) {
+                            walletExpenses = walletExpenses + transaction.amount
+                        }
+                    })
+                    totalEWallets = ewallet.period === queryPeriod ? totalEWallets + ewallet.amount : totalEWallets + 0;
+                    totalExpenses += walletExpenses;
+                });
+                var totalDeposits = 0;
+                swallets.map(swallet => {
+                    var walletDeposits = 0;
+                    swallet.deposits.forEach(deposit => {
+                        if (deposit.period === queryPeriod) {
+                            walletDeposits = walletDeposits + deposit.amount;
+                        }
+                    });
+                    totalDeposits += walletDeposits;
+                });
+                var totalBudget = totalEWallets + totalDeposits;
+                var data = {
+                    userId: userId,
+                    totalDeposits: totalDeposits,
+                    totalBudget: totalBudget,
+                    totalExpenses: totalExpenses,
+                    period: queryPeriod,
+                    extraSavings: totalBudget - (totalExpenses + totalDeposits)
+                }
+                res.send(data);
             })
             .catch(handler.handleError(res));
     }

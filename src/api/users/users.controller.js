@@ -47,6 +47,7 @@ var controller = {
           _id: user._id,
           email: user.email,
           name: user.name,
+          isNext: user.isNext,
           activated: user.activated
         });
       })

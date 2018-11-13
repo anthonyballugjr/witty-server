@@ -12,11 +12,15 @@ var UsersSchema = new Schema({
   },
   name: {
     type: String,
-    default: 'Witty User'
+    default: 'Witty User',
   },
   hash: String,
   salt: String,
   activated: {
+    type: Boolean,
+    default: false
+  },
+  isNext:{
     type: Boolean,
     default: false
   }

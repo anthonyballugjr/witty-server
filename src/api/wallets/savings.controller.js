@@ -2,6 +2,18 @@ var Savings = require('./savings.model');
 var handler = require('../../services/handler');
 var moment = require('moment');
 
+var month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+var n = new Date();
+var m = month[n.getMonth()];
+var nm = m === 'December' ? month[n.getMonth() - 11] : month[n.getMonth() + 1];
+var pm = m === 'January' ? month[n.getMonth + 11] : month[n.getMonth() - 1];
+var y = n.getFullYear();
+var ny = nm === 'January' ? n.getFullYear() + 1 : n.getFullYear();
+var py = pm === 'December' ? n.getFullYear() - 1 : n.getFullYear();
+var cPeriod = m + " " + y;
+var nPeriod = nm + " " + ny;
+var pPeriod = pm + " " + py
+
 
 var controller = {
     getEntries: function (req, res) {
@@ -20,7 +32,6 @@ var controller = {
                     };
                 }));
             })
-            // .then(handler.respondWithResult(res))
             .catch(handler.handleError(res));
     },
     create: function (req, res) {
@@ -62,7 +73,7 @@ var controller = {
                 res.status(200).send(savings.map(saving => {
 
                     var savingDeposits = 0;
-                    saving.deposits.forEach(deposit=>{
+                    saving.deposits.forEach(deposit => {
                         savingDeposits += deposit.amount;
                     });
 
@@ -70,15 +81,16 @@ var controller = {
                         _id: saving._id,
                         name: saving.name,
                         goal: saving.goal,
-                        totalDesposits: savingDeposits,
+                        totalDeposits: savingDeposits,
                         createdAt: moment(Savings.createdAt).format('MMMM DD, YYYY - dddd'),
                         deposits: saving.deposits.length !== 0 ? saving.deposits.map(deposit => {
                             return {
                                 _id: deposit._id,
+                                period: deposit.period,
                                 amount: deposit.amount,
                                 date: moment(deposit.createdAt).format('MMMM DD, YYYY - dddd')
                             }
-                        }) :'No Deposits'
+                        }) : 0
                     }
                 }))
             })
@@ -87,49 +99,32 @@ var controller = {
     },
     overview: function (req, res) {
         var userId = req.params.userId
-        var period = req.query.period
 
-        return Savings.find(period ? { userId: userId, period: period } : { userId: userId })
-            .populate('transactions')
+        return Savings.find({ userId: userId })
+            .populate('deposits')
             .exec()
             .then(handler.handleEntityNotFound(res))
-            .then(Savingss => {
-                var budgetTotal = 0;
-                var totalExpenses = 0;
-                var savingsW = 0;
-                var expenseW = 0;
-                Savingss.map(Savings => {
-                    var SavingsExpenses = 0;
-                    Savings.transactions.forEach(transaction => {
-                        SavingsExpenses = SavingsExpenses + transaction.amount
+            .then(wallets => {
+                var totalDeposits = 0;
+                wallets.map(wallet => {
+                    var walletDeposits = 0;
+                    wallet.deposits.forEach(deposit => {
+                        if (deposit.period === cPeriod) {
+                            walletDeposits = walletDeposits + deposit.amount
+                            console.log(walletDeposits);
+                        }
                     });
-
-                    expenseW = Savings.type === "expense" ? expenseW + Savings.amount : expenseW
-                    savingsW = Savings.type === "savings" ? savingsW + Savings.amount : savingsW
-                    budgetTotal = budgetTotal + Savings.amount;
-                    totalExpenses = totalExpenses + SavingsExpenses;
-                    // return {
-                    //     SavingsType: Savings.type,
-                    //     SavingsName: Savings.name,
-                    //     SavingsAmount: Savings.amount,
-                    //     SavingsTransactions: SavingsExpenses,
-                    //     SavingsCategory: Savings.categoryId,
-                    //     period: Savings.period
-                    // };
-                })
+                    totalDeposits += walletDeposits;
+                });
                 var data = {
-                    userId: userId,
-                    period: period,
-                    totalBudget: budgetTotal,
-                    totalSavings: savingsW,
-                    totalExpenses: totalExpenses,
-                    // extraSavings: budgetTotal - (totalExpenses + savingsW),
+                    // userId: userId,
+                    totalDeposits: totalDeposits
                 }
                 res.send(data);
             })
             // .then(handler.respondWithResult(res))
             .catch(handler.handleError(res));
-    },
-    
+    }
+
 }
 module.exports = controller;

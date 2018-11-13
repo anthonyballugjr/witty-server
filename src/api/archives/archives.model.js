@@ -18,7 +18,11 @@ var ArchiveSchema = new Schema({
         type: Number,
         required: true
     },
-    totalSavings: {
+    totalDeposits: {
+        type: Number,
+        required: true
+    },
+    extraSavings: {
         type: Number,
         required: true
     }
@@ -34,5 +38,24 @@ var ArchiveSchema = new Schema({
             virtuals: true
         }
     });
+
+ArchiveSchema
+    .path('period')
+    .validate(function (value) {
+        return this.constructor.findOne({ period: this.period })
+            .exec()
+            .then(archive => {
+                if (archive) {
+                    if (this._id === archive._id) {
+                        return true;
+                    }
+                    return false;
+                }
+                return true;
+            })
+            .catch(function (err) {
+                throw err;
+            });
+    }, 'Data already exists for that period!');
 
 module.exports = mongoose.model('Archive', ArchiveSchema);

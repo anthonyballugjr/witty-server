@@ -6,8 +6,8 @@ var authentication = require('./users.authentication');
 var auth = require('../../services/auth/jwt');
 
 //authentication
+router.post('/login', authentication.login); 
 router.post('/register', auth.optional, authentication.register); 
-router.post('/login', auth.optional, authentication.login); 
 router.get('/me', auth.required, authentication.me); 
 router.put('/changePassword', auth.required, authentication.changePassword);
 //controller

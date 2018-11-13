@@ -18,9 +18,7 @@ module.exports = {
             from: 'Witty Wallet<no-reply@config.mailerAddress>',
             to: user.email,
             subject: 'Witty Wallet reset password request',
-            // html: '<p>You or (someone else) has requested to change your password, please click <a href=\"' + link + '"\>' + 'this link' + '</a> to complete the process.</p> <p>If you did not remember making this request, please ignore this message and your password will remain unchanged.</p><p>Regards,</p><p>Anthony from the Witty Team</p>'
-
-            html: `Click <a href="${link}">this link</a>.`
+            html: `<p>You or (someone else) has requested to change your password, please click <a href="${link}">this link</a> to complete the process.</p> <p>If you did not remember making this request, please ignore this message and your password will remain unchanged.</p><p>Regards,</p><p>Anthony from the Witty Team</p>`
         }
     },
     resetOptions: function (user, temp) {
@@ -28,7 +26,7 @@ module.exports = {
             from: 'Witty Wallet<no-reply@config.mailerAddress>',
             to: user.email,
             subject: 'Witty Wallet reset password request',
-            html: '<p>Your new password is ' + temp + '</p><p>Use this password to login and change it to something more rememberable</p>'
+            html: `<p>Your new password is ${temp}</p><p>Use this password to login and change it to something more rememberable</p>`
         }
     },
     activateOptions: function (user) {
@@ -37,7 +35,7 @@ module.exports = {
             from: 'Witty Wallet<no-reply@config.mailerAddress>',
             to: user.email,
             subject: 'Witty Wallet Account Activation',
-            html: '<p>Thank you for registering, please click <a href=\"' + link + '"\>' + 'this link' + '</a> to complete the registration process.</p><p>Regards,</p><p>Anthony from the Witty Team</p>'
+            html: `<p>Thank you for registering, please click <a href="${link}">this link</a> to complete the registration process.</p><p>Regards,</p><p>Anthony from the Witty Team</p>`
         }
     },
     sendMail: function (options) {
