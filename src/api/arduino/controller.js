@@ -6,7 +6,7 @@ var controller = {
     },
     postData: function (req, res) {
         var count = req.body.count;
-        data = count;
+        data = parseInt(count); 
 
         res.status(200).send({count: data});
         console.log(count);
