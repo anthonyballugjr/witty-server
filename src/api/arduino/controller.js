@@ -1,14 +1,21 @@
-var data = 10;
+var arduinoSwitch;
 
 var controller = {
     home: function (req, res) {
-        res.status(200).send({ Message: 'Hello Reindel', Test: 'Server Test', data: data })
+        res.status(200).send({ Message: 'Hello Reindel', Test: 'Server Test', switch: arduinoSwitch })
     },
     postData: function (req, res) {
-        var count = req.body.count;
-        data = parseInt(count); 
+        var trigger = req.body.trigger;
 
-        res.status(200).send({count: data});
+        if (trigger === 'on') {
+            arduinoSwitch = 'on';
+            res.status(200).send({ switch = 'on' });
+        } else {
+            arduinoSwitch = 'off';
+            res.status(200).send({switch: 'off'});
+        }
+
+        res.status(200).send({ count: data });
         console.log(count);
     },
     feed: function (req, res) {
