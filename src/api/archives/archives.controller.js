@@ -54,9 +54,9 @@ var controller = {
             return {
               period: archive.period,
               totalBudget: archive.totalBudget,
-              totalExpenses: archive.totalExpenses,
-              totalSavings: archive.totalDeposits,
-              extraSavings: archive.extraSavings
+              totalExpenses: archive.totalExpenses > 0 ? archive.totalExpenses : 0,
+              totalSavings: archive.totalDeposits > 0 ? archive.totalDeposits: 0,
+              extraSavings: archive.extraSavings > 0 ? archive.extraSavings: 0
             }
           }),
           grandTotalBudget: grandTotalBudget ? grandTotalBudget : 0,
