@@ -12,6 +12,7 @@ var categoryEntry = [
   { _id: 'dbt', desc: 'debts & loans', icon: 'card' },
   { _id: 'gft', desc: 'gifts & donations', icon: 'heart' },
   { _id: 'tax', desc: 'taxes', icon: 'paper' },
+  { _id: 'pc', desc: 'personal care', icon: 'person' },
   { _id: 'oth', desc: 'others', icon: 'clipboard' }
 ];
 

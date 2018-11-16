@@ -9,7 +9,8 @@ var auth = require('../../services/auth/jwt');
 //create budget with ML
 router.get('/expense/next/:userId', auth.optional, eController.getNext);
 router.get('/expense/predict/:userId', auth.required, eController.predict);
-//CRUD
+router.get('/expense/suggest/:userId', auth.required, eController.predictNext);
+//CRUD;
 router.get('/expense', auth.optional, eController.getEntries);
 router.get('/expense/user/:userId', auth.required, eController.getMyWallets);
 router.post('/expense', auth.required, eController.create);

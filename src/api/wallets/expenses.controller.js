@@ -217,6 +217,54 @@ var controller = {
                 res.status(200).send(data);
             })
             .catch(handler.handleError(res));
+    },
+    predictNext: function (req, res) {
+        var userId = req.params.userId;
+        var name = req.query.name;
+
+        Expense.find({ userId: userId })
+            .where('name', name)
+            .populate('transactions')
+            .exec()
+            .then((wallets) => {
+
+                const x = [];
+                const y = [];
+
+                var budgetTotal = 0;
+                var totalExpenses = 0;
+
+                var data = {
+                    x: wallets.map(wallet => {
+                        var walletExpenses = 0;
+                        budgetTotal += wallet.amount;
+
+
+                        wallet.transactions.forEach(transaction => {
+                            walletExpenses += transaction.amount
+                        })
+                        totalExpenses = totalExpenses + walletExpenses;
+                        var variance = wallet.amount - walletExpenses;
+
+                        x.push([parseFloat(wallet.amount), parseFloat(variance)]);
+                        y.push([parseFloat(walletExpenses)]);
+
+                        const mlr = new MLR(x, y);
+                        var pred = mlr.predict(x[x.length - 1]);
+
+                        return wallet.period === cPeriod ? {
+                            name: wallet.name,
+                            userId: wallet.userId,
+                            amount: wallet.categoryId === 'bll' ? wallet.amount : pred[0],
+                            categoryId: wallet.categoryId,
+                            period: nPeriod,
+                        } : null
+                    })
+                }
+                res.status(200).send(data);
+            })
+            .catch(handler.handleError(res));
     }
+
 }
 module.exports = controller;
