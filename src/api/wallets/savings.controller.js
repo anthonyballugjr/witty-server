@@ -35,9 +35,7 @@ var controller = {
             .catch(handler.handleError(res));
     },
     create: function (req, res) {
-        return Savings.create(req.body, {
-            context: 'query'
-        })
+        return Savings.create(req.body)
             .then(handler.respondWithResult(res, 201))
             .catch(handler.handleError(res));
     },
