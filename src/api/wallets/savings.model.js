@@ -63,5 +63,9 @@ SavingSchema
             });
     }, 'Wallet already exists, please enter a new wallet name.');
 
+var validatePresenceOf = function (value) {
+    return value && value.length;
+};
+
 
 module.exports = mongoose.model('Savings', SavingSchema);
