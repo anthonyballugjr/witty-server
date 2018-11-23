@@ -47,8 +47,7 @@ var controller = {
             new: true,
             upsert: true,
             setDefaultsOnInsert: true,
-            runValidators: true,
-            context: 'query'
+            runValidators: true
         }).exec()
             .then(handler.handleEntityNotFound(res))
             .then(handler.respondWithResult(res, 201))
