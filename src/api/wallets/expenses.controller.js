@@ -47,7 +47,7 @@ var controller = {
         if (req.body._id) {
             Reflect.deleteProperty(req.body, '_id');
         }
-        return Expense.findByIdAndUpdate(req.params.id, req.body, {
+        return Expense.findByIdAndUpdate(req.body.id, req.body, {
             new: true,
             upsert: true,
             setDefaultsOnInsert: true,

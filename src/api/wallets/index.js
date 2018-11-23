@@ -23,7 +23,7 @@ router.get('/expense/overview/:userId', auth.required, eController.overview);
 router.get('/savings', auth.optional, sController.getEntries);
 router.get('/savings/user/:userId', auth.required, sController.getMySavings);
 router.post('/savings', auth.required, sController.create);
-router.put('/savings/:id', auth.required, sController.update);
+router.put('/savings', auth.required, sController.update);
 router.delete('/savings/:id', auth.required, sController.destroy);
 
 router.get('/savings/overview/:userId', auth.required, sController.overview);
