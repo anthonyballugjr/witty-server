@@ -47,7 +47,7 @@ SavingSchema
 SavingSchema
     .path('name')
     .validate(function (value) {
-        return this.constructor.findOne({ name: value })
+        return this.model.findOne({ name: value })
             .exec()
             .then(wallet => {
                 if (wallet) {
