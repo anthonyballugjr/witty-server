@@ -40,6 +40,7 @@ var controller = {
     var period = req.query.period
     var userId = req.params.userId
     return Archives.find(period ? { userId: userId, period: period } : { userId: userId })
+      .limit(12)
       .exec()
       .then(handler.handleEntityNotFound(res))
       .then((archives) => {
@@ -55,8 +56,8 @@ var controller = {
               period: archive.period,
               totalBudget: archive.totalBudget,
               totalExpenses: archive.totalExpenses > 0 ? archive.totalExpenses : 0,
-              totalSavings: archive.totalDeposits > 0 ? archive.totalDeposits: 0,
-              extraSavings: archive.extraSavings > 0 ? archive.extraSavings: 0
+              totalSavings: archive.totalDeposits > 0 ? archive.totalDeposits : 0,
+              extraSavings: archive.extraSavings > 0 ? archive.extraSavings : 0
             }
           }),
           grandTotalBudget: grandTotalBudget ? grandTotalBudget : 0,
@@ -75,7 +76,7 @@ var controller = {
       .then(handler.respondWithResult(res, 201))
       .catch(handler.handleError(res));
   },
-  destroy: function (req, res){
+  destroy: function (req, res) {
     if (req.body._id) {
       Reflect.deleteProperty(req.body, '_id');
     }
