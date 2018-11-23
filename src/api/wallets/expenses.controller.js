@@ -44,7 +44,6 @@ var controller = {
             .catch(handler.handleError(res));
     },
     update: function (req, res) {
-        console.log(req.body);
         if (req.body._id) {
             Reflect.deleteProperty(req.body, '_id');
         }

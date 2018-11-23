@@ -40,7 +40,6 @@ var controller = {
             .catch(handler.handleError(res));
     },
     update: function (req, res) {
-        console.log(req.body);
         if (req.body._id) {
             Reflect.deleteProperty(req.body, '_id');
         }
@@ -48,7 +47,8 @@ var controller = {
             new: true,
             upsert: true,
             setDefaultsOnInsert: true,
-            runValidators: true
+            runValidators: true,
+            context: 'query'
         }).exec()
             .then(handler.handleEntityNotFound(res))
             .then(handler.respondWithResult(res, 201))
