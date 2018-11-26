@@ -4,7 +4,7 @@ var categoryEntry = [
   { _id: 'hse', desc: 'housing', icon: 'home' },
   { _id: 'bll', desc: 'bills & utilities', icon: 'calendar' },
   { _id: 'tra', desc: 'transportation', icon: 'bus' },
-  { _id: 'hc', desc: 'health and fitness', icon: 'medkit' },
+  { _id: 'hc', desc: 'health & fitness', icon: 'medkit' },
   { _id: 'ent', desc: 'entertainment', icon: 'game-controller-b' },
   { _id: 'lei', desc: 'leisure', icon: 'wine' },
   { _id: 'trv', desc: 'travel', icon: 'plane' },
