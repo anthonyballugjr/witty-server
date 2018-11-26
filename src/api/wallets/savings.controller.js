@@ -44,10 +44,10 @@ var controller = {
             Reflect.deleteProperty(req.body, '_id');
         }
         return Savings.findOneAndUpdate({ _id: req.params.id }, req.body, {
+            runValidators: true,
             new: true,
             upsert: true,
             setDefaultsOnInsert: true,
-            runValidators: true,
             context: 'query'
         }).exec()
             .then(handler.handleEntityNotFound(res))
