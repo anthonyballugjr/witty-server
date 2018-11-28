@@ -48,7 +48,7 @@ var controller = {
             .then(function (wallet) {
                 wallet.set(req.body);
 
-                return wallet.update({
+                return wallet.save({
                     new: true,
                     upsert: true,
                     setDefaultsOnInsert: true,
