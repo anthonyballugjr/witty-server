@@ -49,9 +49,9 @@ var controller = {
                 wallet.set(req.body);
 
                 return wallet.save()
-                    .then(() => res.json(updated))
+                    .then(() => res.json(wallet))
                     .catch((err) => res.status(400).send(err));
-            })
+            });
 
         // return Savings.findOneAndUpdate({ _id: req.params.id }, { $set: req.body }, {
         //     new: true,
