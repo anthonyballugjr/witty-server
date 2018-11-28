@@ -44,16 +44,25 @@ var controller = {
             Reflect.deleteProperty(req.body, '_id');
         }
 
-        return Savings.findOneAndUpdate({ _id: req.params.id }, { $set: req.body }, {
-            new: true,
-            upsert: true,
-            setDefaultsOnInsert: true,
-            runValidators: true,
-            context: 'query'
-        }).exec()
-            .then(handler.handleEntityNotFound(res))
-            .then(handler.respondWithResult(res, 201))
-            .catch(handler.handleError(res));
+        return Savings.findById(req.params.id)
+            .then(function (wallet) {
+                wallet.set(req.body);
+
+                return wallet.save()
+                    .then(() => res.json(updated))
+                    .catch((err) => res.status(400).send(err));
+            })
+
+        // return Savings.findOneAndUpdate({ _id: req.params.id }, { $set: req.body }, {
+        //     new: true,
+        //     upsert: true,
+        //     setDefaultsOnInsert: true,
+        //     runValidators: true,
+        //     context: 'query'
+        // }).exec()
+        //     .then(handler.handleEntityNotFound(res))
+        //     .then(handler.respondWithResult(res, 201))
+        //     .catch(handler.handleError(res));
     },
     destroy: function (req, res) {
         if (req.body._id) {
