@@ -43,7 +43,8 @@ var controller = {
         if (req.body._id) {
             Reflect.deleteProperty(req.body, '_id');
         }
-        return Savings.findByIdAndUpdate(req.params.id, { $set: req.body }, {
+
+        return Savings.findOneAndUpdate({ _id: req.params.id }, { $set: req.body }, {
             new: true,
             upsert: true,
             setDefaultsOnInsert: true,
