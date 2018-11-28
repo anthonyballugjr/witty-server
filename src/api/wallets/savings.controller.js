@@ -48,10 +48,11 @@ var controller = {
             .then(function (wallet) {
                 wallet.set(req.body);
 
-                return wallet.save({
+                return wallet.update({
                     new: true,
                     upsert: true,
                     setDefaultsOnInsert: true,
+                    runValidators: true
                 })
                     .then(() => res.json(wallet))
                     .catch((err) => res.status(400).send(err));
