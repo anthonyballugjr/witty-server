@@ -209,7 +209,7 @@ var controller = {
                         return wallet.period === pPeriod ? {
                             name: wallet.name,
                             userId: wallet.userId,
-                            amount: wallet.categoryId === 'bll' ? wallet.amount :  round(pred[0], 2),
+                            amount: wallet.categoryId === 'bll' ? wallet.amount :  round.round(pred[0], 2),
                             categoryId: wallet.categoryId,
                             period: cPeriod,
                         } : null
