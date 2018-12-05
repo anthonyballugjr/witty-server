@@ -17,7 +17,7 @@ var nPeriod = nm + " " + ny;
 var pPeriod = pm + " " + py
 
 var controller = {
-    round: function round(value, decimals) {
+    round: function (value, decimals) {
         return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
     },
     getEntries: function (req, res) {
