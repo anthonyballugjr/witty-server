@@ -17,6 +17,9 @@ var nPeriod = nm + " " + ny;
 var pPeriod = pm + " " + py
 
 var controller = {
+    round: function round(value, decimals) {
+        return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+    },
     getEntries: function (req, res) {
         var name = req.query.name;
 
@@ -208,7 +211,7 @@ var controller = {
                         return wallet.period === pPeriod ? {
                             name: wallet.name,
                             userId: wallet.userId,
-                            amount: wallet.categoryId === 'bll' ? wallet.amount : pred[0],
+                            amount: wallet.categoryId === 'bll' ? wallet.amount : round(pred[0], 2),
                             categoryId: wallet.categoryId,
                             period: cPeriod,
                         } : null
