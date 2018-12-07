@@ -83,6 +83,7 @@ var controller = {
 
         return Savings.find({ userId: userId })
             .populate('deposits')
+            .populate('withdrawals')
             .exec()
             .then(handler.handleEntityNotFound(res))
             .then((savings) => {
@@ -93,11 +94,17 @@ var controller = {
                         savingDeposits += deposit.amount;
                     });
 
+                    var withdrawals = 0;
+                    saving.withdrawals.forEach(withdrawal=>{
+                        withdrawals += withdrawal.amount;
+                    });
+
                     return {
                         _id: saving._id,
                         name: saving.name,
                         goal: saving.goal,
                         totalDeposits: savingDeposits,
+                        totalWithdrawals: withdrawals,
                         createdAt: moment(Savings.createdAt).format('MMMM DD, YYYY - dddd'),
                         deposits: saving.deposits.length !== 0 ? saving.deposits.map(deposit => {
                             return {

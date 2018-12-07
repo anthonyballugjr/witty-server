@@ -43,11 +43,24 @@ SavingSchema
         }
     });
 
+SavingSchema
+    .virtual('withdrawals', {
+        ref: 'Transaction',
+        localField: '_id',
+        foreignField: 'walletId',
+        justOne: false,
+        options: {
+            sort: {
+                date: 1
+            },
+        }
+    });
+
 
 SavingSchema
     .path('name')
     .validate(function (value) {
-        return this.constructor.findOne({ name: value})
+        return this.constructor.findOne({ name: value })
             .exec()
             .then(wallet => {
                 if (wallet) {

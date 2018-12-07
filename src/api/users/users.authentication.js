@@ -1,4 +1,5 @@
-var passport = require('passport');
+var passport = require('passport')
+var Savings = require('../wallets/savings.model');
 var mailer = require('../../services/mailer');
 var decode = require('jwt-decode');
 var handler = require('../../services/handler');
@@ -25,7 +26,7 @@ var authentication = {
     }
 
     var finalUser = new Users(user);
-
+    console.log(finalUser);
     finalUser.setPassword(user.password);
 
     return finalUser.save()
@@ -37,6 +38,16 @@ var authentication = {
           user: user,
           message: 'An email has been sent to ' + user.email + ' for completion of the registration process.'
         });
+      })
+      .then(() => {
+        var e = {
+          name: "emergency fund",
+          goal: 0,
+          userId: finalUser._id
+        }
+
+        var fund = new Savings(e);
+        fund.save();
       })
       .catch((err) => res.status(400).send(err.message));
   },
@@ -151,10 +162,10 @@ var authentication = {
       .exec()
       .then(function (user) {
         if (user) {
-          var fUser =  user.utilityAuth();
+          var fUser = user.utilityAuth();
 
-          var msg =  mailer.requestOptions(fUser);
-           mailer.sendMail(msg);
+          var msg = mailer.requestOptions(fUser);
+          mailer.sendMail(msg);
           res.status(200).send('Request confirmed, please check your email to complete the process.');
         }
         else {
