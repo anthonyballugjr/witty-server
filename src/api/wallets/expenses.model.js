@@ -61,7 +61,7 @@ ExpenseSchema
 ExpenseSchema
     .path('period')
     .validate(function (value) {
-        return this.constructor.findOne({ period: value, name: this.name })
+        return this.constructor.findOne({ period: value, name: this.name, userId: this.userId })
             .exec()
             .then(wallet => {
                 if (wallet) {

@@ -18,8 +18,8 @@ var pPeriod = pm + " " + py
 var controller = {
     getEntries: function (req, res) {
         var name = req.query.name;
-
-        return Savings.find(name ? { name: name } : {})
+        var userId = req.query.userId;
+        return Savings.find(name ? { name: name, userId: userId } : {})
             .populate('deposits')
             .exec()
             .then((savings) => {
@@ -80,8 +80,9 @@ var controller = {
     },
     getMySavings: function (req, res) {
         var userId = req.params.userId
+        var name = req.query.name;
 
-        return Savings.find({ userId: userId })
+        return Savings.find(name ? { userId: userId, name: name } : { userId: userId })
             .populate('deposits')
             .populate('withdrawals')
             .exec()
@@ -95,7 +96,7 @@ var controller = {
                     });
 
                     var withdrawals = 0;
-                    saving.withdrawals.forEach(withdrawal=>{
+                    saving.withdrawals.forEach(withdrawal => {
                         withdrawals += withdrawal.amount;
                     });
 
@@ -112,6 +113,13 @@ var controller = {
                                 period: deposit.period,
                                 amount: deposit.amount,
                                 date: moment(deposit.createdAt).format('MMMM DD, YYYY - dddd')
+                            }
+                        }) : 0,
+                        withdrawals: saving.withdrawals.length !== 0 ? saving.withdrawals.map(withdrawal => {
+                            return {
+                                _id: withdrawal._id,
+                                amount: withdrawal.amount,
+                                date: moment(withdrawal.createdAt).format('MMMM DD, YYYY - dddd')
                             }
                         }) : 0
                     }
