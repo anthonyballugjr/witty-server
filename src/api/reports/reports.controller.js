@@ -87,7 +87,8 @@ var controller = {
             })
             .populate({
                 path: 'sWallets',
-                populate: { path: 'deposits' }
+                populate: { path: 'deposits' },
+                populate: { path: 'withdrawals' }
             })
             .exec()
             .then(handler.handleEntityNotFound(res))
@@ -117,10 +118,22 @@ var controller = {
                     });
                     totalDeposits += walletDeposits;
                 });
+                var totalWithdrawals = 0;
+                swallets.map(swallet => {
+                    var walletWithdrawals = 0;
+                    swallet.withdrawals.foreach(withdrawal => {
+                        var period = moment(withdrawal.createdAt).format('MMMM, YYYY');
+                        if (period === queryPeriod) {
+                            walletWithdrawals = walletWithdrawals + withdrawal.amount;
+                        }
+                    });
+                    totalWithdrawals += walletWithdrawals;
+                });
                 var totalBudget = totalEWallets + totalDeposits;
                 var data = {
                     userId: userId,
                     totalDeposits: totalDeposits,
+                    totalWithdrawals: totalWithdrawals,
                     totalBudget: totalBudget,
                     totalExpenses: totalExpenses,
                     period: queryPeriod,
