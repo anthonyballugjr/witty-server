@@ -26,7 +26,8 @@ var controller = {
             })
             .populate({
                 path: 'eWallets',
-                populate: { path: 'transactions' }
+                populate: { path: 'transactions' },
+                populate: { path: 'withdrawals' }
             })
             .exec()
             .then(handler.handleEntityNotFound(res))
@@ -87,7 +88,7 @@ var controller = {
             })
             .populate({
                 path: 'sWallets',
-                populate: { path: 'deposits, withdrawals' }
+                populate: { path: 'deposits' }
             })
             .exec()
             .then(handler.handleEntityNotFound(res))
