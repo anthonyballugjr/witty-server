@@ -110,23 +110,26 @@ var controller = {
                 var totalDeposits = 0;
                 swallets.map(swallet => {
                     var walletDeposits = 0;
+                    var walletWithdrawals = 0;
                     swallet.deposits.forEach(deposit => {
                         if (deposit.period === queryPeriod) {
                             walletDeposits = walletDeposits + deposit.amount;
                         }
+                        swallet.withdrawals.forEach(withdrawal => {
+                            var period = moment(withdrawal.updatedAt).format('MMMM YYYY');
+                            if (period === queryPeriod) {
+                                walletWithdrawals = walletWithdrawals + withdrawal.amount;
+                            }
+                        });
+                        swallet.withdrawals.forEach(withdrawal => {
+                            var period = moment(withdrawal.updatedAt).format('MMMM YYYY');
+                            if (period === queryPeriod) {
+                                walletWithdrawals = walletWithdrawals + withdrawal.amount;
+                            }
+                        });
                     });
                     totalDeposits += walletDeposits;
-                });
-                var totalWithdrawals = 0;
-                swallets.map(swallet => {
-                    var walletWithdrawals = 0;
-                    swallet.withdrawals.forEach(withdrawal => {
-                        var period = moment(withdrawal.updatedAt).format('MMMM YYYY');
-                        if (period === queryPeriod) {
-                            walletWithdrawals = walletWithdrawals + withdrawal.amount;
-                        }
-                    });
-                    totalWithdrawals += walletWithdrawals;
+                    totalWithdrawals += walletWithdrawals
                 });
                 var totalBudget = totalEWallets + (totalDeposits - totalWithdrawals);
                 var data = {
