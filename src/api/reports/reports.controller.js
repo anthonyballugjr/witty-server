@@ -108,6 +108,7 @@ var controller = {
                     totalExpenses += walletExpenses;
                 });
                 var totalDeposits = 0;
+                var totalWithdrawals = 0;
                 swallets.map(swallet => {
                     var walletDeposits = 0;
                     var walletWithdrawals = 0;
