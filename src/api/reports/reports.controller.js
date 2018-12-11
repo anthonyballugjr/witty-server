@@ -87,8 +87,7 @@ var controller = {
             })
             .populate({
                 path: 'sWallets',
-                populate: { path: 'deposits' },
-                populate: { path: 'withdrawals' }
+                populate: { path: 'deposits, withdrawals' }
             })
             .exec()
             .then(handler.handleEntityNotFound(res))
