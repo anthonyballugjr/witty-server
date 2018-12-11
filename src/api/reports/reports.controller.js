@@ -22,8 +22,7 @@ var controller = {
         return User.findOne({ _id: userId })
             .populate({
                 path: 'sWallets',
-                populate: { path: 'deposits' },
-                populate: { path: 'withdrawals' }
+                populate: { path: 'deposits' }
             })
             .populate({
                 path: 'eWallets',
@@ -88,7 +87,8 @@ var controller = {
             })
             .populate({
                 path: 'sWallets',
-                populate: { path: 'deposits' }
+                populate: { path: 'deposits' },
+                populate: { path: 'withdrawals' }
             })
             .exec()
             .then(handler.handleEntityNotFound(res))
