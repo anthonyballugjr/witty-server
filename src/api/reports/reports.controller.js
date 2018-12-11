@@ -121,7 +121,7 @@ var controller = {
                 var totalWithdrawals = 0;
                 swallets.map(swallet => {
                     var walletWithdrawals = 0;
-                    swallet.withdrawals.foreach(withdrawal => {
+                    swallet.withdrawals.forEach(withdrawal => {
                         var period = moment(withdrawal.createdAt).format('MMMM, YYYY');
                         if (period === queryPeriod) {
                             walletWithdrawals = walletWithdrawals + withdrawal.amount;
