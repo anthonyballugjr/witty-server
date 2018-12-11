@@ -129,7 +129,7 @@ var controller = {
                     });
                     totalWithdrawals += walletWithdrawals;
                 });
-                var totalBudget = totalEWallets + totalDeposits;
+                var totalBudget = totalEWallets + (totalDeposits - totalWithdrawals);
                 var data = {
                     userId: userId,
                     totalDeposits: totalDeposits,
