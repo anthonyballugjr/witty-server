@@ -116,28 +116,29 @@ var controller = {
                         if (deposit.period === queryPeriod) {
                             walletDeposits = walletDeposits + deposit.amount;
                         }
-                        swallet.withdrawals.forEach(withdrawal => {
-                            var period = moment(withdrawal.updatedAt).format('MMMM YYYY');
-                            if (period === queryPeriod) {
-                                walletWithdrawals = walletWithdrawals + withdrawal.amount;
-                            }
-                        });
                     });
-                    totalDeposits += walletDeposits;
-                    totalWithdrawals += walletWithdrawals
+                    swallet.withdrawals.forEach(withdrawal => {
+                        var period = moment(withdrawal.updatedAt).format('MMMM YYYY');
+                        if (period === queryPeriod) {
+                            walletWithdrawals = walletWithdrawals + withdrawal.amount;
+                        }
+                    });
                 });
-                var totalBudget = totalEWallets + (totalDeposits - totalWithdrawals);
-                var data = {
-                    userId: userId,
-                    totalDeposits: totalDeposits,
-                    totalWithdrawals: totalWithdrawals,
-                    totalBudget: totalBudget,
-                    totalExpenses: totalExpenses,
-                    period: queryPeriod,
-                    extraSavings: totalBudget - (totalExpenses + totalDeposits)
-                }
-                res.send(data);
-            })
+                totalDeposits += walletDeposits;
+                totalWithdrawals += walletWithdrawals
+            });
+        var totalBudget = totalEWallets + (totalDeposits - totalWithdrawals);
+        var data = {
+            userId: userId,
+            totalDeposits: totalDeposits,
+            totalWithdrawals: totalWithdrawals,
+            totalBudget: totalBudget,
+            totalExpenses: totalExpenses,
+            period: queryPeriod,
+            extraSavings: totalBudget - (totalExpenses + totalDeposits)
+        }
+        res.send(data);
+    })
             .catch(handler.handleError(res));
     }
 }
