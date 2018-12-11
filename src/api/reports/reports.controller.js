@@ -121,12 +121,6 @@ var controller = {
                                 walletWithdrawals = walletWithdrawals + withdrawal.amount;
                             }
                         });
-                        swallet.withdrawals.forEach(withdrawal => {
-                            var period = moment(withdrawal.updatedAt).format('MMMM YYYY');
-                            if (period === queryPeriod) {
-                                walletWithdrawals = walletWithdrawals + withdrawal.amount;
-                            }
-                        });
                     });
                     totalDeposits += walletDeposits;
                     totalWithdrawals += walletWithdrawals
