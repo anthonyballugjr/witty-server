@@ -87,7 +87,7 @@ var controller = {
             })
             .populate({
                 path: 'sWallets',
-                populate: { path: 'deposits' }
+                populate: { path: 'deposits withdrawals' }
             })
             .exec()
             .then(handler.handleEntityNotFound(res))
@@ -110,29 +110,31 @@ var controller = {
                 });
 
                 var totalDeposits = 0;
+                var totalWithdrawals = 0;
                 swallets.map(swallet => {
                     var walletDeposits = 0;
+                    var walletWithdrawals = 0;
                     swallet.deposits.forEach(deposit => {
                         if (deposit.period === queryPeriod) {
                             walletDeposits = walletDeposits + deposit.amount;
                         }
                     });
-                    totalDeposits = totalDeposits + walletDeposits
+                    swallet.withdrawals.forEach(withdrawal => {
+                        var x = moment(withdrawal.createdAt).format('MMMM YYYY');
+                        if (x === queryPeriod) {
+                            walletWithdrawals = walletWithdrawals + withdrawal.amount;
+                        }
+                    });
+                    totalDeposits = totalDeposits + walletDeposits;
+                    totalWithdrawals = totalWithdrawals + walletWithdrawals;
                 });
 
 
-                // var totalWithdrawals = 0;
-                // swallets.map(swallet=>{
-                //     var walletWithdrawals = 0;
-                //     swallet.withdrawals.forEach(withdrawal=>{
-
-                //     })
-                // })
-
-                var totalBudget = totalEWallets + totalDeposits - totalWithdrawals;
+                var totalBudget = totalEWallets + (totalDeposits - totalWithdrawals);
                 var data = {
                     userId: userId,
                     totalDeposits: totalDeposits,
+                    totalWithdrawals: totalWithdrawals,
                     totalBudget: totalBudget,
                     totalExpenses: totalExpenses,
                     period: queryPeriod,

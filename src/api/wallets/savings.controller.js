@@ -21,6 +21,7 @@ var controller = {
         var userId = req.query.userId;
         return Savings.find(name ? { name: name, userId: userId } : {})
             .populate('deposits')
+            .populate('withdrawals')
             .exec()
             .then((savings) => {
                 res.status(200).send(savings.map(saving => {
@@ -29,6 +30,7 @@ var controller = {
                         name: saving.name,
                         goal: saving.goal,
                         deposits: saving.deposits.length !== 0 ? saving.deposits : 0,
+                        withdrawals: saving.withdrawals.length !== 0 ? saving.withdrawals : 0
                     };
                 }));
             })
