@@ -130,7 +130,7 @@ var controller = {
                 });
 
 
-                var totalBudget = totalEWallets + (totalDeposits - totalWithdrawals);
+                var totalBudget = totalEWallets + totalDeposits;
                 var data = {
                     userId: userId,
                     totalDeposits: totalDeposits,
