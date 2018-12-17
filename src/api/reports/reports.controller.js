@@ -22,7 +22,7 @@ var controller = {
         return User.findOne({ _id: userId })
             .populate({
                 path: 'sWallets',
-                populate: { path: 'deposits' }
+                populate: { path: 'deposits withdrawals' }
             })
             .populate({
                 path: 'eWallets',
@@ -34,12 +34,14 @@ var controller = {
             .then(user => {
                 var overallExpenses = 0;
                 var overallDeposits = 0;
+                var overallWithdrawals = 0;
                 var overallBudget = 0;
 
                 var ewallets = user.eWallets;
                 var swallets = user.sWallets;
 
-                var walletBudgets = 0;
+                var overallEWallets = 0;
+                var overallTransactions = 0;
                 var walletGoals = 0;
 
                 ewallets.map(ewallet => {
@@ -48,28 +50,38 @@ var controller = {
                     ewallet.transactions.forEach(transaction => {
                         walletExpenses += transaction.amount;
                     });
-                    walletBudgets += ewallet.amount;
-                    overallExpenses += walletExpenses;
+                    overallEWallets += ewallet.amount;
+                    overallTransactions += walletExpenses;
                 });
 
                 swallets.map(swallet => {
                     var walletDeposits = 0;
-
+                    var walletWithdrawals = 0;
                     swallet.deposits.forEach(deposit => {
                         walletDeposits += deposit.amount;
                     });
+                    swallet.withdrawals.forEach(withdrawal => {
+                        walletWithdrawals += withdrawal.amount;
+                    });
                     overallDeposits += walletDeposits;
+                    overallWithdrawals += walletWithdrawals;
                 });
-                overallBudget += (walletBudgets + overallDeposits);
+                overallBudget = overallEWallets + overallDeposits;
+                overallExpenses = overallTransactions + overallWithdrawals;
 
                 var data = {
                     _id: userId,
                     overallBudget: overallBudget,
                     overallDeposits: overallDeposits,
+                    overallEWallets: overallEWallets,
+                    overallWithdrawals: overallWithdrawals,
                     overallExpenses: overallExpenses,
-                    overallExtra: overallBudget - (overallDeposits + overallExpenses),
-                    averageMonthlyBudget: (overallBudget + overallDeposits) / (swallets.length + ewallets.length),
-                    averageMonthlySavings: overallDeposits / swallets.length,
+                    overallTransactions: overallTransactions,
+                    overallWithdrawals: overallWithdrawals,
+                    overallSavings: overallDeposits - overallWithdrawals,
+                    overallExtra: overallBudget - (overallExpenses + overallDeposits),
+                    averageMonthlyBudget: overallBudget / (swallets.length + ewallets.length),
+                    averageMonthlySavings: (overallDeposits - overallWithdrawals) / swallets.length,
                     averageMonthlyExpenses: overallExpenses / ewallets.length
                 }
                 res.status(200).send(data);
@@ -96,7 +108,7 @@ var controller = {
                 var swallets = user.sWallets;
 
                 var totalEWallets = 0;
-                var totalExpenses = 0;
+                var totalTransactions = 0;
 
                 ewallets.map(ewallet => {
                     var walletExpenses = 0;
@@ -106,7 +118,7 @@ var controller = {
                         }
                     })
                     totalEWallets = ewallet.period === queryPeriod ? totalEWallets + ewallet.amount : totalEWallets + 0;
-                    totalExpenses += walletExpenses;
+                    totalTransactions += walletExpenses;
                 });
 
                 var totalDeposits = 0;
@@ -128,16 +140,18 @@ var controller = {
                     totalDeposits = totalDeposits + walletDeposits;
                     totalWithdrawals = totalWithdrawals + walletWithdrawals;
                 });
-
-
-                var totalBudget = totalEWallets + totalDeposits;
+                var totalBudget = totalDeposits + totalEWallets;
+                var totalExpenses = totalWithdrawals + totalTransactions;
                 var data = {
                     userId: userId,
-                    totalDeposits: totalDeposits,
-                    totalWithdrawals: totalWithdrawals,
                     totalBudget: totalBudget,
+                    totalDeposits: totalDeposits,
+                    totalEWallets: totalEWallets,
                     totalExpenses: totalExpenses,
+                    totalWithdrawals: totalWithdrawals,
+                    totalTransactions: totalTransactions,
                     period: queryPeriod,
+                    totalSavings: totalDeposits - totalWithdrawals,
                     extraSavings: totalBudget - (totalExpenses + totalDeposits)
                 }
                 res.send(data);

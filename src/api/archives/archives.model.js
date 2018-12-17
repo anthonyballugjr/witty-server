@@ -14,11 +14,27 @@ var ArchiveSchema = new Schema({
         type: Number,
         required: true
     },
-    totalExpenses: {
+    totalEWallets: {
         type: Number,
         required: true
     },
     totalDeposits: {
+        type: Number,
+        required: true
+    },
+    totalExpenses: {
+        type: Number,
+        required: true
+    },
+    totalWithdrawals: {
+        type: Number,
+        required: true
+    },
+    totalTransactions: {
+        type: Number,
+        required: true
+    },
+    totalSavings: {
         type: Number,
         required: true
     },
