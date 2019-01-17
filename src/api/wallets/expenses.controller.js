@@ -181,6 +181,8 @@ var controller = {
             .exec()
             .then((wallets) => {
 
+                // const X = [];
+                // const Y = [];
                 const x = [];
                 const y = [];
 
@@ -196,14 +198,52 @@ var controller = {
                         wallet.transactions.forEach(transaction => {
                             walletExpenses += transaction.amount
                         })
+
                         totalExpenses = totalExpenses + walletExpenses;
                         var variance = wallet.amount - walletExpenses;
 
-                        x.push([parseFloat(wallet.amount), parseFloat(variance)]);
+                        // X.push([parseFloat(wallet.amount)]);
+
+                        // var second = 0;
+                        // var third = 0;
+
+                        // if (X[X.length - 2] != null) {
+                        //     second = X[X.length - 2];
+                        // }
+
+                        // if (X[X.length - 3] != null) {
+                        //     third = X[X.length - 3];
+                        // }
+
+                        x.push([parseFloat(wallet.amount)]);
+                        // x.push([parseFloat(X[X.length - 1]), second, third]);
+                        // x.push([parseFloat(wallet.amount)]);
                         y.push([parseFloat(walletExpenses)]);
 
+                        // var var2 = 0;
+                        // var var3 = 0;
+
+                        // if (x[x.length - 2] != null) {y
+                        //     var2 = x[x.length - 2];
+                        // }
+
+                        // if (x[x.length - 3] != null) {
+                        //     var2 = x[x.length - 3];
+                        // }
+
                         const mlr = new MLR(x, y);
-                        var pred = mlr.predict(x[x.length - 1]);
+                        var pred = x[x.length - 2] && x[x.length - 3] ? mlr.predict([x[x.length - 1], x[x.length - 2], x[x.length - 3]]) : mlr.predict(x[x.length - 1]);
+                        // console.log(budgetTotal);
+                        // console.log(mlr.predict.toJSON());
+
+                        // return {
+                        //     id: wallet._id,
+                        //     period: wallet.period,
+                        //     name: wallet.name,
+                        //     walletBudget: wallet.amount,
+                        //     totalExpensesAmountToPredict: walletExpenses,
+                        //     predictedAmountForNextMonth: Math.ceil(pred[0])
+                        // }
 
                         return wallet.period === pPeriod ? {
                             name: wallet.name,
@@ -255,7 +295,7 @@ var controller = {
                         return wallet.period === cPeriod ? {
                             name: wallet.name,
                             userId: wallet.userId,
-                            amount: wallet.categoryId === 'bll' ? wallet.amount : pred[0],
+                            amount: wallet.categoryId === 'bll' || wallet.categoryId === 'dbt' ? wallet.amount : pred[0],
                             categoryId: wallet.categoryId,
                             period: nPeriod,
                         } : null
