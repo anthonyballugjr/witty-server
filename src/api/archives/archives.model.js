@@ -58,7 +58,7 @@ var ArchiveSchema = new Schema({
 ArchiveSchema
     .path('period')
     .validate(function (value) {
-        return this.constructor.findOne({ period: this.period, userId: this.userId })
+        return this.constructor.findOne({ period: value, userId: this.userId })
             .exec()
             .then(archive => {
                 if (archive) {
