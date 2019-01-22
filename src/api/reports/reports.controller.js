@@ -139,9 +139,11 @@ var controller = {
                     });
                     totalDeposits = totalDeposits + walletDeposits;
                     totalWithdrawals = totalWithdrawals + walletWithdrawals;
+
                 });
                 var totalBudget = totalDeposits + totalEWallets;
                 var totalExpenses = totalWithdrawals + totalTransactions;
+                var totalSavings = totalBudget - totalExpenses;
                 var data = {
                     userId: userId,
                     totalBudget: totalBudget,
@@ -151,8 +153,8 @@ var controller = {
                     totalWithdrawals: totalWithdrawals,
                     totalTransactions: totalTransactions,
                     period: queryPeriod,
-                    totalSavings: totalDeposits - totalWithdrawals,
-                    extraSavings: totalBudget - (totalExpenses + totalDeposits)
+                    totalSavings: totalSavings,
+                    extraSavings: totalBudget - (totalExpenses + totalSavings)
                 }
                 res.send(data);
             })
