@@ -1,6 +1,7 @@
 var nodemailer = require('nodemailer');
 var config = require('../../config');
 var path = require('path');
+var Email = require('email-templates');
 
 var transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -10,7 +11,37 @@ var transporter = nodemailer.createTransport({
     }
 });
 
+const email = new Email({
+    message: {
+        from: 'Witty Wallet<no-reply@config.mailerAddress>'
+    },
+    transport: transporter,
+    views: {
+        options: {
+            extension: 'hbs'
+        }
+    }
+});
+
 module.exports = {
+    sendEmail(user, template, subject) {
+
+        const mailOptions = {
+            template: template,
+            message: {
+                to: user.email
+            },
+            locals: {
+                name: user.name,
+                paragraph: details,
+                subject: subject
+            }
+        };
+
+        return email
+            .send(mailOptions)
+            .catch(console.error);
+    },
     requestOptions: function (user) {
         var link = config.resetPassword + user.token;
         // var link = path.join(config.resetPassword,user.token);

@@ -154,7 +154,7 @@ var controller = {
                     totalTransactions: totalTransactions,
                     period: queryPeriod,
                     totalSavings: totalSavings,
-                    extraSavings: totalBudget - (totalExpenses + totalSavings)
+                    extraSavings: totalBudget - (totalExpenses + totalDeposits)
                 }
                 res.send(data);
             })

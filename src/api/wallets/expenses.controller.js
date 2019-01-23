@@ -236,22 +236,22 @@ var controller = {
                         // console.log(budgetTotal);
                         // console.log(mlr.predict.toJSON());
 
-                        // return {
-                        //     id: wallet._id,
-                        //     period: wallet.period,
-                        //     name: wallet.name,
-                        //     walletBudget: wallet.amount,
-                        //     totalExpensesAmountToPredict: walletExpenses,
-                        //     predictedAmountForNextMonth: Math.ceil(pred[0])
-                        // }
-
-                        return wallet.period === pPeriod ? {
+                        return {
+                            id: wallet._id,
+                            period: wallet.period,
                             name: wallet.name,
-                            userId: wallet.userId,
-                            amount: wallet.categoryId === 'bll' || wallet.categoryId === 'dbt' ? wallet.amount : Math.ceil(pred[0]),
-                            categoryId: wallet.categoryId,
-                            period: cPeriod,
-                        } : null
+                            walletBudget: wallet.amount,
+                            totalExpensesAmountToPredict: walletExpenses,
+                            predictedAmountForNextMonth: Math.ceil(pred[0])
+                        }
+
+                        // return wallet.period === pPeriod ? {
+                        //     name: wallet.name,
+                        //     userId: wallet.userId,
+                        //     amount: wallet.categoryId === 'bll' || wallet.categoryId === 'dbt' ? wallet.amount : Math.ceil(pred[0]),
+                        //     categoryId: wallet.categoryId,
+                        //     period: cPeriod,
+                        // } : null
                     })
                 }
                 res.status(200).send(data);
