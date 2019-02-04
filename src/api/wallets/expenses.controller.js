@@ -1,5 +1,4 @@
 var Expense = require('./expenses.model');
-var Transaction = require('../transactions/transactions.model');
 var handler = require('../../services/handler');
 var moment = require('moment');
 const MLR = require('ml-regression-multivariate-linear');
@@ -12,7 +11,7 @@ var pm = m === 'January' ? month[n.getMonth() + 11] : month[n.getMonth() - 1];
 var y = n.getFullYear();
 var ny = nm === 'January' ? n.getFullYear() + 1 : n.getFullYear();
 var py = pm === 'December' ? n.getFullYear() - 1 : n.getFullYear();
-var cPeriod = m + " " + y;
+var cPeriod = moment(n).format("MMMM YYYY");
 var nPeriod = nm + " " + ny;
 var pPeriod = pm + " " + py
 

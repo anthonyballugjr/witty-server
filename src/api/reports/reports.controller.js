@@ -81,8 +81,8 @@ var controller = {
                     overallSavings: overallDeposits - overallWithdrawals,
                     overallExtra: overallBudget - (overallExpenses + overallDeposits),
                     averageMonthlyBudget: overallBudget / (swallets.length + ewallets.length),
-                    averageMonthlySavings: (overallDeposits - overallWithdrawals) / swallets.length,
-                    averageMonthlyExpenses: overallExpenses / ewallets.length
+                    averageMonthlySavings: swallets.length > 1 ?(overallDeposits - overallWithdrawals) / swallets.length : 0,
+                    averageMonthlyExpenses: ewallets.length > 0 ? overallExpenses / ewallets.length : 0
                 }
                 res.status(200).send(data);
             })

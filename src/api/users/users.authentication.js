@@ -3,6 +3,8 @@ var Savings = require('../wallets/savings.model');
 var mailer = require('../../services/mailer');
 var decode = require('jwt-decode');
 var handler = require('../../services/handler');
+var challenges = require('../../public/json/challenges');
+var Challenge = require('../challenge/challenge.model');
 
 var Users = require('./users.model.js');
 
@@ -70,11 +72,17 @@ var authentication = {
 
             return user.save()
               .then(() => res.status(200).send('Your account has been activated! You can now login using the application'))
+              .then(() => {
+                var savingChallenge = challenges.createChallenge(user._id);
+
+                Challenge.create(savingChallenge);
+              })
               .catch((err) => res.status(400).send(err));
           }
         }
       })
-
+      .catch(handler.handleError(res));
+    console.log(saveChallenge);
   },
   login: function (req, res, next) {
     console.log(req.headers);

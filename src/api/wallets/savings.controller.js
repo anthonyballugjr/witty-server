@@ -114,14 +114,16 @@ var controller = {
                                 _id: deposit._id,
                                 period: deposit.period,
                                 amount: deposit.amount,
-                                date: moment(deposit.createdAt).format('MMMM DD, YYYY - dddd')
+                                date: moment(deposit.createdAt).format('MMMM DD, YYYY - dddd'),
+                                created: moment(deposit.createdAt).format('MMMM YYYY')
                             }
                         }) : 0,
                         withdrawals: saving.withdrawals.length !== 0 ? saving.withdrawals.map(withdrawal => {
                             return {
                                 _id: withdrawal._id,
                                 amount: withdrawal.amount,
-                                date: moment(withdrawal.createdAt).format('MMMM DD, YYYY - dddd')
+                                date: moment(withdrawal.createdAt).format('MMMM DD, YYYY - dddd'),
+                                created: moment(withdrawal.createdAt).format('MMMM YYYY')
                             }
                         }) : 0
                     }
