@@ -18,6 +18,7 @@ router.put('/expense/:id', auth.required, eController.update);
 router.delete('/expense/:id', auth.required, eController.destroy);
 //reports
 router.get('/expense/overview/:userId', auth.required, eController.overview);
+router.get('/expense/toverview/:userId', auth.optional, eController.tOverview);
 
 //SAVINGS
 router.get('/savings', auth.optional, sController.getEntries);

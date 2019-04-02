@@ -100,7 +100,8 @@ var controller = {
                                 _id: transaction._id,
                                 desc: transaction.desc,
                                 amount: transaction.amount,
-                                date: moment(transaction.createdAt).format('MMMM DD, YYYY - dddd')
+                                date: moment(transaction.createdAt).format('MMMM DD, YYYY - dddd'),
+                                dateEntered: moment(transaction.createdAt).format('MMMM YYY')
                             }
                         }) : 0
                     }
@@ -285,7 +286,7 @@ var controller = {
                         totalExpenses = totalExpenses + walletExpenses;
                         var variance = wallet.amount - walletExpenses;
 
-                        x.push([parseFloat(wallet.amount), parseFloat(variance)]);
+                        x.push([parseFloat(wallet.amount)]);
                         y.push([parseFloat(walletExpenses)]);
 
                         const mlr = new MLR(x, y);
@@ -303,6 +304,33 @@ var controller = {
                 res.status(200).send(data);
             })
             .catch(handler.handleError(res));
+    },
+    tOverview: function (req, res) {
+        var categoryId = req.query.categoryId;
+        var period = req.query.period;
+        var userId = req.params.userId;
+
+        return Expense.find({ period: period, categoryId: categoryId, userId: userId })
+            .populate('transactions')
+            .populate('category -wallets')
+            .exec()
+            .then(handler.handleEntityNotFound(res))
+            .then(wallets => {
+                var totalTransactions = 0;
+                var categoryDesc = "";
+                wallets.map(wallet => {
+                    
+                    var category = wallet.category;
+                    category.map(i => {
+                        categoryDesc = i.desc;
+                    })
+
+                    wallet.transactions.forEach(transaction => {
+                        totalTransactions += transaction.amount
+                    });
+                })
+                res.send({ totalTransactions: totalTransactions, category: categoryDesc });
+            });
     }
 
 }
