@@ -11,6 +11,14 @@ These instructions will get you a copy of the project up and running on your loc
 Make sure you have installed the following:
 
 * [NodeJS](https://nodejs.org/en/)
+* [Mongo DB](https://www.mongodb.com/)
+
+Create .env file in your project folder (refer to the .env.example file for environment variables required)
+Assign Mongo DB you will use for the project (see example below)
+
+```
+MONGODB_URI=mongodb://localhost:27017/your-database-here
+```
 
 ### Installing
 
@@ -29,7 +37,6 @@ npm i
 ```
 npm run serve
 ```
-
 
 ## Built With
 
