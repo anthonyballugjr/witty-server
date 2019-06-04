@@ -1,6 +1,6 @@
 # Witty Wallet Server
 
-Database server for [Witty Wallet Mobile App](https://github.com/anthonyballugjr/witty-app)
+REST API server for [Witty Wallet Mobile App](https://github.com/anthonyballugjr/witty-app)
 
 ## Getting Started
 
