@@ -13,7 +13,7 @@ Make sure you have installed the following:
 * [NodeJS](https://nodejs.org/en/)
 * [Mongo DB](https://www.mongodb.com/)
 
-Create .env file in your project folder (refer to the .env.example file for environment variables required)
+Create .env file in your project folder (refer to the .env.example file for environment variables required)  
 Assign Mongo DB you will use for the project (see example below)
 
 ```
