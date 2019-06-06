@@ -85,7 +85,6 @@ var authentication = {
     console.log(saveChallenge);
   },
   login: function (req, res, next) {
-    console.log(req.headers);
     var { body: { user } } = req;
 
     if (!user.email) {

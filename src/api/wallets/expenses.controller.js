@@ -101,7 +101,7 @@ var controller = {
                                 desc: transaction.desc,
                                 amount: transaction.amount,
                                 date: moment(transaction.createdAt).format('MMMM DD, YYYY - dddd'),
-                                dateEntered: moment(transaction.createdAt).format('MMMM YYY')
+                                created: moment(transaction.createdAt).fromNow()
                             }
                         }) : 0
                     }
@@ -279,7 +279,6 @@ var controller = {
                         var walletExpenses = 0;
                         budgetTotal += wallet.amount;
 
-
                         wallet.transactions.forEach(transaction => {
                             walletExpenses += transaction.amount
                         })
@@ -319,7 +318,7 @@ var controller = {
                 var totalTransactions = 0;
                 var categoryDesc = "";
                 wallets.map(wallet => {
-                    
+
                     var category = wallet.category;
                     category.map(i => {
                         categoryDesc = i.desc;
