@@ -27,7 +27,7 @@ var controller = {
                         _id: deposit._id,
                         amount: deposit.amount,
                         period: deposit.period,
-                        createdAt: moment(deposit.createdAt).format('MMMM DD, YYYY - dddd, hh:mm A')
+                        created: moment(deposit.createdAt).fromNow()
                     };
                 }));
             })

@@ -29,7 +29,7 @@ var controller = {
                         _id: transaction._id,
                         desc: transaction.desc,
                         amount: transaction.amount,
-                        createdAt: (moment(transaction.createdAt).format('MMMM DD, YYYY') === today) ? `Today - ${moment(transaction.createdAt).format('hh:mm A')}` : moment(transaction.createdAt).format('MMMM DD, YYYY - dddd, hh:mm A'),
+                        created: moment(transaction.createdAt).fromNow(),
                         updatedAt: moment(transaction.createdAt).format('MMMM YYYY')
                     };
                 }));
