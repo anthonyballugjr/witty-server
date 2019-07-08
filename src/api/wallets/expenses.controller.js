@@ -186,7 +186,7 @@ var controller = {
 
                 var budgetTotal = 0;
                 var totalExpenses = 0;
-                let predicts = [];
+                let prediction = [];
 
                  let data = (function(){
                    
@@ -217,7 +217,7 @@ var controller = {
                         //     predictedAmountForNextMonth: Math.ceil(pred[0])
                         // }   
                         
-                        predicts.push({
+                        prediction.push({
                             id: wallet._id,
                             period: wallet.period,
                             name: wallet.name,
@@ -235,8 +235,8 @@ var controller = {
                         // } : null
                     })
             })();
-                res.status(200).send(predicts);
-                console.log('Predict', predicts);
+                res.status(200).send(prediction);
+                console.log('Predict', prediction);
             })
             .catch(handler.handleError(res));
     },
