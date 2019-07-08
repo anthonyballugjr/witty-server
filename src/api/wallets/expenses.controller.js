@@ -197,7 +197,6 @@ var controller = {
                         wallet.transactions.forEach(transaction => {
                             walletExpenses += transaction.amount
                         })
-                        console.log('wallet', wallet);
 
                         totalExpenses = totalExpenses + walletExpenses;
                         var variance = wallet.amount - walletExpenses;
@@ -206,24 +205,14 @@ var controller = {
                         y.push([parseFloat(walletExpenses)]);
 
                         const mlr = new MLR(x, y);
-                        var pred = x[x.length - 2] && x[x.length - 3] ? mlr.predict([x[x.length - 1], x[x.length - 2], x[x.length - 3]]) : mlr.predict(x[x.length - 1]);
-
-                        // return {
-                        //     id: wallet._id,
-                        //     period: wallet.period,
-                        //     name: wallet.name,
-                        //     walletBudget: wallet.amount,
-                        //     totalExpensesAmountToPredict: walletExpenses,
-                        //     predictedAmountForNextMonth: Math.ceil(pred[0])
-                        // }   
+                        let pred = x[x.length - 2] && x[x.length - 3] ? mlr.predict([x[x.length - 1], x[x.length - 2], x[x.length - 3]]) : mlr.predict(x[x.length - 1]);
                         
                         prediction.push({
-                            id: wallet._id,
-                            period: wallet.period,
                             name: wallet.name,
-                            walletBudget: wallet.amount,
-                            totalExpensesAmountToPredict: walletExpenses,
-                            predictedAmountForNextMonth: Math.ceil(pred[0])
+                            userId: wallet.userId,
+                            amount: wallet.categoryId === 'bll' || wallet.categoryId === 'dbt' ? wallet.amount : Math.ceil(pred[0]),
+                            categoryId: wallet.categoryId,
+                            period: cPeriod
                         })
 
                         // return wallet.period === pPeriod ? {
