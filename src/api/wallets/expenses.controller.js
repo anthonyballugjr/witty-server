@@ -186,16 +186,18 @@ var controller = {
 
                 var budgetTotal = 0;
                 var totalExpenses = 0;
+                let predicts = [];
 
-                var data = {
-                    x: wallets.map(wallet => {
+                 let data = (function(){
+                   
+                       wallets.map(wallet => {
                         var walletExpenses = 0;
                         budgetTotal += wallet.amount;
-
 
                         wallet.transactions.forEach(transaction => {
                             walletExpenses += transaction.amount
                         })
+                        console.log('wallet', wallet);
 
                         totalExpenses = totalExpenses + walletExpenses;
                         var variance = wallet.amount - walletExpenses;
@@ -206,14 +208,23 @@ var controller = {
                         const mlr = new MLR(x, y);
                         var pred = x[x.length - 2] && x[x.length - 3] ? mlr.predict([x[x.length - 1], x[x.length - 2], x[x.length - 3]]) : mlr.predict(x[x.length - 1]);
 
-                        return {
+                        // return {
+                        //     id: wallet._id,
+                        //     period: wallet.period,
+                        //     name: wallet.name,
+                        //     walletBudget: wallet.amount,
+                        //     totalExpensesAmountToPredict: walletExpenses,
+                        //     predictedAmountForNextMonth: Math.ceil(pred[0])
+                        // }   
+                        
+                        predicts.push({
                             id: wallet._id,
                             period: wallet.period,
                             name: wallet.name,
                             walletBudget: wallet.amount,
                             totalExpensesAmountToPredict: walletExpenses,
                             predictedAmountForNextMonth: Math.ceil(pred[0])
-                        }
+                        })
 
                         // return wallet.period === pPeriod ? {
                         //     name: wallet.name,
@@ -223,8 +234,9 @@ var controller = {
                         //     period: cPeriod,
                         // } : null
                     })
-                }
-                res.status(200).send(data);
+            })();
+                res.status(200).send(predicts);
+                console.log('Predict', predicts);
             })
             .catch(handler.handleError(res));
     },
