@@ -181,16 +181,14 @@ var controller = {
             .exec()
             .then((wallets) => {
 
-                // const X = [];
-                // const Y = [];
                 const x = [];
                 const y = [];
 
                 var budgetTotal = 0;
                 var totalExpenses = 0;
 
-                var data = {
-                    x: wallets.map(wallet => {
+                // var data = {
+                let x = wallets.map(wallet => {
                         var walletExpenses = 0;
                         budgetTotal += wallet.amount;
 
@@ -202,39 +200,11 @@ var controller = {
                         totalExpenses = totalExpenses + walletExpenses;
                         var variance = wallet.amount - walletExpenses;
 
-                        // X.push([parseFloat(wallet.amount)]);
-
-                        // var second = 0;
-                        // var third = 0;
-
-                        // if (X[X.length - 2] != null) {
-                        //     second = X[X.length - 2];
-                        // }
-
-                        // if (X[X.length - 3] != null) {
-                        //     third = X[X.length - 3];
-                        // }
-
                         x.push([parseFloat(wallet.amount)]);
-                        // x.push([parseFloat(X[X.length - 1]), second, third]);
-                        // x.push([parseFloat(wallet.amount)]);
                         y.push([parseFloat(walletExpenses)]);
-
-                        // var var2 = 0;
-                        // var var3 = 0;
-
-                        // if (x[x.length - 2] != null) {y
-                        //     var2 = x[x.length - 2];
-                        // }
-
-                        // if (x[x.length - 3] != null) {
-                        //     var2 = x[x.length - 3];
-                        // }
 
                         const mlr = new MLR(x, y);
                         var pred = x[x.length - 2] && x[x.length - 3] ? mlr.predict([x[x.length - 1], x[x.length - 2], x[x.length - 3]]) : mlr.predict(x[x.length - 1]);
-                        // console.log(budgetTotal);
-                        // console.log(mlr.predict.toJSON());
 
                         return {
                             id: wallet._id,
@@ -253,8 +223,8 @@ var controller = {
                         //     period: cPeriod,
                         // } : null
                     })
-                }
-                res.status(200).send(data);
+                // }
+                res.status(200).send(x);
             })
             .catch(handler.handleError(res));
     },
