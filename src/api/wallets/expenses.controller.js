@@ -187,8 +187,8 @@ var controller = {
                 var budgetTotal = 0;
                 var totalExpenses = 0;
 
-                // var data = {
-                let x = wallets.map(wallet => {
+                var data = {
+                    x: wallets.map(wallet => {
                         var walletExpenses = 0;
                         budgetTotal += wallet.amount;
 
@@ -223,8 +223,8 @@ var controller = {
                         //     period: cPeriod,
                         // } : null
                     })
-                // }
-                res.status(200).send(x);
+                }
+                res.status(200).send(data);
             })
             .catch(handler.handleError(res));
     },
