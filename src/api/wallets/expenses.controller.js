@@ -188,7 +188,7 @@ var controller = {
                 var totalExpenses = 0;
                 let prediction = [];
 
-                 let data = (function(){
+                (function(){
                    
                        wallets.map(wallet => {
                         var walletExpenses = 0;
